@@ -1,0 +1,75 @@
+######### HomePage Dashboard ##########
+
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - HOMEPAGE_VAR_RadarrAPI=${HOMEPAGE_VAR_RadarrAPI}
+      - HOMEPAGE_VAR_SonarrAPI=${HOMEPAGE_VAR_SonarrAPI}
+      - HOMEPAGE_VAR_SabnzbAPI=${HOMEPAGE_VAR_SabnzbAPI}
+      - HOMEPAGE_VAR_PlexAPI=${HOMEPAGE_VAR_PlexAPI}
+    ports:
+      - 3000:3000
+    volumes:
+      - ${DockerDir}/homepage:/app/config # Make sure your local config directory exists
+      - ${DockerDir}/homepage/public/icons:/app/public/icons
+      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+    restart: unless-stopped
+
+######### Radarr Movie Downloads ##########
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DockerDir}/Radarr:/config
+      - ${MediaDir}/Video/Movies:/movies 
+      - ${MediaDir}/Downloads/complete:/downloads 
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+######### Sonarr TV Shows Downloads ##########
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+
+    volumes:
+      - ${DockerDir}/Sonarr:/config
+      - ${MediaDir}/Video/TV-Shows:/tv 
+      - ${MediaDir}/Downloads/complete:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+
+######### SABNZB Downloader ##########
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+       - ${DockerDir}/sabnzb:/config
+       - ${MediaDir}/Downloads/complete:/downloads 
+       - ${MediaDir}/Downloads/incomplete:/incomplete-downloads
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+
