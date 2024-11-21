@@ -1,0 +1,108 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/services
+
+- Media:
+    - Plex:
+        icon: plex.png
+        href: "https://{{HOMEPAGE_VAR_PJHomeserverURL}}:32400/web"
+
+        description: Plex
+        ping: {{HOMEPAGE_VAR_PJHomeserverURL}}
+        widget:
+          type: plex 
+          url: "https://{{HOMEPAGE_VAR_PJHomeserverURL}}:32400"
+          key: {{HOMEPAGE_VAR_PlexAPI}}
+    - Sonarr:
+        icon: sonarr.png
+        href: "http://{{HOMEPAGE_VAR_DockerURL}}:8989"
+        description: Series management
+        ping: "{{HOMEPAGE_VAR_DockerURL}}:8989"
+        widget:
+          type: sonarr
+          url: "http://{{HOMEPAGE_VAR_DockerURL}}:8989"
+          key: {{HOMEPAGE_VAR_SonarrAPI}}
+    - Radarr:
+        icon: radarr.png
+        href: "http://{{HOMEPAGE_VAR_DockerURL}}:7878"
+        description: Movie management
+        ping: "{{HOMEPAGE_VAR_DockerURL}}:7878"
+        widget:
+          type: radarr
+          url: "http://{{HOMEPAGE_VAR_DockerURL}}:7878"
+          key: {{HOMEPAGE_VAR_RadarrAPI}}
+    - sabnzb:
+        icon: /icons/sabnzb.png
+        href: "http://{{HOMEPAGE_VAR_DockerURL}}:8080"
+        description: NZB Download 
+        ping: "{{HOMEPAGE_VAR_DockerURL}}:8080"
+        widget:
+          type: sabnzbd
+          url: "http://{{HOMEPAGE_VAR_DockerURL}}:8080"
+          key: {{HOMEPAGE_VAR_SabnzbAPI}}
+
+
+
+- Admin Console:
+
+    - Xen Orchestrator:
+        icon: /icons/xo.png
+        href: "https://{{HOMEPAGE_VAR_XOURL}}/signin#/"
+        description: XO VM management
+        ping: {{HOMEPAGE_VAR_XOURL}}
+
+    - XCP-NG1:
+        icon: /icons/xcp-ng.png
+        href: "https://{{HOMEPAGE_VAR_XCPNG1URL}}/#/"
+        description: XCP-NG1 VM Host
+        ping: {{HOMEPAGE_VAR_XCPNG1URL}}
+
+    - PJHomeassistant:
+        icon: /icons/ha.png
+        href: https://pjhomeassistant.houghton.network
+        description: Home Assistant
+        ping: {{HOMEPAGE_VAR_HomeAssistantURL}}
+        widget:
+          type: homeassistant
+          url: https://pjhomeassistant.houghton.network
+          key: {{HOMEPAGE_VAR_HomeAssistantAPI}}
+          custom:
+
+
+
+    - PJHomeserver:
+        icon: /icons/dsm.png
+        href: "https://{{HOMEPAGE_VAR_PJHomeserverURL}}:4600"
+        description: PJHomeserver
+        ping: {{HOMEPAGE_VAR_PJHomeserverURL}}
+        widget:
+          type: diskstation
+          url: "https://{{HOMEPAGE_VAR_PJHomeserverURL}}:4600"
+          username: {{HOMEPAGE_VAR_NasUser}}
+          password: {{HOMEPAGE_VAR_NASPassword}}
+    - Unifi Controller:
+        icon: /icons/unifi.png
+        href: "https://{{HOMEPAGE_VAR_UnifiURL}}:443"
+        description: Unifi Console
+        ping: {{HOMEPAGE_VAR_UnifiURL}}
+        widget:
+          type: unifi
+          url: "https://{{HOMEPAGE_VAR_UnifiURL}}"
+          username: {{HOMEPAGE_VAR_NasUser}}
+          password: {{HOMEPAGE_VAR_NASPassword}}
+
+- Markets:
+
+    - Crypto:
+       # icon: /icons/crypto.png
+       # href: https://coinmarketcap.com/
+        #description: CoinmarketCap
+        widget:
+          type: coinmarketcap
+          currency: GBP
+          symbols: [BTC, ETH, SOL, QNT, ICP ]
+          key: {{HOMEPAGE_VAR_CoinmarketcapAPI}}
+          defaultinterval: 7d # Optional
+
+
+
