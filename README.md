@@ -71,6 +71,27 @@ Click on Advanced tab - AMD CBS - FCH Common options - FCH Common options set to
 
 ####  XCP-NG & Xen Orchestrtor 
 
+Based on Citrix XenServer hypervisor™, XCP-ng is a fully open source virtualization platform. Result of the massive cooperation between individuals as well as companies XCP-ng is now part of the Linux Foundation as an incubated solution under the Xen Project. XCP-ng is very similar as Citrix Hypervisor™ with the notable exception of the restrictions: XCP-ng has none! Unleash the true power of virtualization.
+
+Xen Orchestra is the officially supported client for XCP-ng. It's currently developed by the same team as the XCP-ng project (Vates).
+
+It's also far more than just a client: because it runs 24/7 in a daemon, a lot of extra cool stuff is possible:
+
+Various reports
+ACLs
+Self Service
+VM load balancing
+SDN controller
+Backup
+Delta backup
+Disaster Recovery
+Continuous Replication
+Backup with RAM
+Warm migration
+and much more!
+
+
+
   - XCP-NG
     - install xcp-ng
       - Download ISO file for XCP-ng from:
