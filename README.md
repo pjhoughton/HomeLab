@@ -139,11 +139,30 @@ sudo openssl req -newkey rsa:4096 \
 
 #### Docker Compose 
 
-useful commands:
+  - Install Docker 
+  - Install Docker Compose 
+  - Useful Docker Commands:
+
+    - Stops, removes containers ,Volumes, networks 
+
+docker compose down
+
+    - Download all cobtainers latest version 
 
 docker compose pull
-docker compose down 
+
+    - Builds, (re)creates, starts, containers  -d  runs in background 
+
 docker compose up -d
+
+    - Lists Containers 
+
+docker compose ps
+
+
+
+
+
 
 
 
