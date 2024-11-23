@@ -47,16 +47,15 @@ This repo is a constant work-in-progress...
 
 #### Software
 
-- Xen Orchestrator
-- Unifi Network Controller
-- Home Assistant
+- Xen Orchestrator (Ubuntu VM with XO built from sources) 
+- Unifi SDN  Network Controller ( built into gateway) 
+- Home Assistant ( VM using vmdk from Home assistant)
 - Docker / Docker Compose
 - Home Media Server
-  - Plex
-  - Sonarr
-  - Radarr
-  - Homepage
-  - Home Assistant
+  - Plex (Synology App)
+  - Sonarr (Docker container)
+  - Radarr (Docker container)
+  - Homepage (Docker container)
 
 ####  Configure mini PC
 
@@ -67,6 +66,12 @@ This repo is a constant work-in-progress...
 Click on Advanced tab - AMD CBS - FCH Common options - FCH Common options set to always on.
 
   - Ensure virtualization is enabled 
+
+
+####  Configure NAS
+
+I mostly use the NAS as datastore but I do currently use the Synology Plex App although this could  just as easily be a Docker container.
+
 
 
 ####  XCP-NG & Xen Orchestrtor 
