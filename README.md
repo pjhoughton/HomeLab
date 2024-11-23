@@ -102,6 +102,7 @@ and much more!
 
   - XO (Xen Orchestrator)
     - Build a base VM either ubunto or Debian
+    - install  prerequisites git and oppenssl
     - Use XenOrchestrorInstallerUpfster script to deploy Xen Orchestrtor.
 
 
