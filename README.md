@@ -1,5 +1,7 @@
 # Media Server / HomeLab
 
+Home Lab Incorporating XCP-NG hypervisor for VM and Docker compose for containers 
+
 This repo is a constant work-in-progress... 
 
 
@@ -21,27 +23,27 @@ This repo is a constant work-in-progress...
   - Storage: 500GB PCIe4.0 SSD
   - Operating System: XCP-NG Version: 8.3
  
-  #### Virual Machines
+  #### Virtual Machines
   
 - XO 
   - Purpose: Xen Orchestrator
-  - Processor: 4x
+  - Processor: 4
   - RAM: 4GB
-  - Storage: 100GB (Thin Provissioned)
+  - Storage: 100GB (Thin Provisioned)
   - Operating System: Ubuntu 24.04.1
  
 - HA   
-  - Purpose: Home Assistantant
-  - Processor: 4x
+  - Purpose: Home Assistant
+  - Processor: 4
   - RAM: 4GB
-  - Storage: 32GB (Thin Provissioned)
+  - Storage: 32GB (Thin Provisioned)
   - Operating System: Home Assistant OS 13.2
  
 - Docker   
   - Purpose: Docker Host
   - Processor: 4x
   - RAM: 8GB
-  - Storage: 100GB (Thin Provissioned)
+  - Storage: 100GB (Thin Provisioned)
   - Operating System: Ubuntu 24.04.1
 
 
@@ -74,7 +76,7 @@ I mostly use the NAS as datastore but I do currently use the Synology Plex App a
 
 
 
-####  XCP-NG & Xen Orchestrtor 
+####  XCP-NG & Xen Orchestrator 
 
 Based on Citrix XenServer hypervisor™, XCP-ng is a fully open source virtualization platform. Result of the massive cooperation between individuals as well as companies XCP-ng is now part of the Linux Foundation as an incubated solution under the Xen Project. XCP-ng is very similar as Citrix Hypervisor™ with the notable exception of the restrictions: XCP-ng has none! Unleash the true power of virtualization.
 
@@ -106,9 +108,9 @@ and much more!
 
 
   - XO (Xen Orchestrator)
-    - Build a base VM either ubunto or Debian
+    - Build a base VM either ubuntu or Debian
     - install  prerequisites git and oppenssl
-    - Use XenOrchestrorInstallerUpfster script to deploy Xen Orchestrtor.
+    - Use XenOrchestrorInstallerUpfster script to deploy Xen Orchestrator.
 
 
 commands 
@@ -140,14 +142,38 @@ sudo openssl req -newkey rsa:4096 \
 #### Docker Compose 
 
   - Install Docker 
+
+sudo apt install curl apt-transport-https ca-certificates software-properties-common 
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt install docker-ce -y
+
+sudo usermod -aG docker $USER
+
+newgrp
+
+
+
   - Install Docker Compose 
+
+mkdir -p ~/.docker/cli-plugins/
+
+ curl -SL https://github.com/docker/compose/releases/download/v2.2.27/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+
+chmod +x  ~/.docker/cli-plugins/docker-compose
+
+
+
   - Useful Docker Commands:
 
     - Stops, removes containers ,Volumes, networks 
 
 docker compose down
 
-    - Download all cobtainers latest version 
+    - Download all containers latest version 
 
 docker compose pull
 
