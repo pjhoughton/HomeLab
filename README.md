@@ -101,7 +101,31 @@ and much more!
 
 
   - XO (Xen Orchestrator)
+    - Build a base VM either ubunto or Debian
+    - Use XenOrchestrorInstallerUpfster script to deploy Xen Orchestrtor.
 
+
+commands 
+
+git clone https://github.com/ronivay/XenOrchestraInstallerUpdater.git
+
+cd XenOrchestraInstallerUpdater
+
+cp sample.xo-install.cfg xo-install.cfg
+
+sudo nano xo-install.cfg - amend options as appropriate by uncommenting 
+
+sudo apt-get install openssl
+
+sudo mkdir /opt/xo
+
+sudo openssl req -newkey rsa:4096 \
+            -x509 \
+            -sha256 \
+            -days 3650 \
+            -nodes \
+            -out /opt/xo/xo.crt  \
+            -keyout /opt/xo/xo.key
   
 
 
