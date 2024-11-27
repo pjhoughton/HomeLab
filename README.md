@@ -74,6 +74,19 @@ Click on Advanced tab - AMD CBS - FCH Common options - FCH Common options set to
 
 I mostly use the NAS as datastore but I do currently use the Synology Plex App although this could  just as easily be a Docker container.
 
+  - Folder Structure
+
+
+Docker    #NFS Mount Path for all Docker Containers
+Media     #NFS Mount Path for all media Docker containers
+  Downloads
+    complete
+    incomplete
+  Music
+  Video
+    Movies
+    TV-Shows 
+
 
 
 ####  XCP-NG & Xen Orchestrator 
