@@ -35,6 +35,55 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
     restart: unless-stopped
 
+
+######### VPN  ##########
+
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8080:8080 # sabnzb web interface
+      - 8989:8989 # radarr
+      - 7878:7878 # sonarr
+    volumes:
+      - ${DockerDir}/gluetun:/gluetun
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
+    restart: unless-stopped
+
+######### SABNZB Downloader ##########
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DockerDir}/sabnzb:/config
+      - ${MediaDir}/Downloads/complete:/downloads 
+      - ${MediaDir}/Downloads/incomplete:/incomplete-downloads
+# Not needed as using gluetun as vpn 
+#   ports:
+#     - 8080:8080
+    restart: unless-stopped
+    depends_on: 
+      - gluetun
+    network_mode: service:gluetun  # we are using gluetun vpn 
+
+
+
 ######### Radarr Movie Downloads ##########
 
   radarr:
@@ -48,9 +97,11 @@ services:
       - ${DockerDir}/Radarr:/config
       - ${MediaDir}/Video/Movies:/movies 
       - ${MediaDir}/Downloads/complete:/downloads 
-    ports:
-      - 7878:7878
+# Not needed as using gluetun as vpn 
+#   ports:
+#     - 7878:7878
     restart: unless-stopped
+    network_mode: service:gluetun  # we are using gluetun vpn 
 
 ######### Sonarr TV Shows Downloads ##########
 
@@ -66,25 +117,11 @@ services:
       - ${DockerDir}/Sonarr:/config
       - ${MediaDir}/Video/TV-Shows:/tv 
       - ${MediaDir}/Downloads/complete:/downloads
-    ports:
-      - 8989:8989
+# Not needed as using gluetun as vpn 
+#   ports:
+#     - 8989:8989
     restart: unless-stopped
+    network_mode: service:gluetun  # we are using gluetun vpn 
 
 
-######### SABNZB Downloader ##########
-
-  sabnzbd:
-    image: lscr.io/linuxserver/sabnzbd:latest
-    container_name: sabnzbd
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-       - ${DockerDir}/sabnzb:/config
-       - ${MediaDir}/Downloads/complete:/downloads 
-       - ${MediaDir}/Downloads/incomplete:/incomplete-downloads
-    ports:
-      - 8080:8080
-    restart: unless-stopped
 
