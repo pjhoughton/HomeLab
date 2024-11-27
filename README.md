@@ -76,16 +76,8 @@ I mostly use the NAS as datastore but I do currently use the Synology Plex App a
 
   - Folder Structure
 
+![Screenshot 2024-11-27 121847](https://github.com/user-attachments/assets/c0722313-ca4a-4c01-82b5-d8da5fad20f8)
 
-Docker    #NFS Mount Path for all Docker Containers
-Media     #NFS Mount Path for all media Docker containers
-  Downloads
-    complete
-    incomplete
-  Music
-  Video
-    Movies
-    TV-Shows 
 
 
 
