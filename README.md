@@ -58,6 +58,8 @@ This repo is a constant work-in-progress...
   - Sonarr (Docker container)
   - Radarr (Docker container)
   - Homepage (Docker container)
+  - GlueTUN ( Docker container)
+
 
 ####  Configure mini PC
 
