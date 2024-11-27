@@ -76,8 +76,8 @@ I mostly use the NAS as datastore but I do currently use the Synology Plex App a
 
   - Folder Structure
 
-![Screenshot 2024-11-27 121847](https://github.com/user-attachments/assets/c0722313-ca4a-4c01-82b5-d8da5fad20f8)
 
+![Screenshot 2024-11-21 164210](https://github.com/user-attachments/assets/805b88e4-11cb-4c24-a3d8-449c173b8e08)
 
 
 
