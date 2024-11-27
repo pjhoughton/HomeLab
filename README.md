@@ -75,9 +75,10 @@ Click on Advanced tab - AMD CBS - FCH Common options - FCH Common options set to
 I mostly use the NAS as datastore but I do currently use the Synology Plex App although this could  just as easily be a Docker container.
 
   - Folder Structure
+  - 
+![image](https://github.com/user-attachments/assets/31c81bce-bd6a-4c28-8564-890712047836)
 
 
-![Screenshot 2024-11-21 164210](https://github.com/user-attachments/assets/805b88e4-11cb-4c24-a3d8-449c173b8e08)
 
 
 
