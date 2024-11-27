@@ -59,12 +59,12 @@
 
     - PJHomeassistant:
         icon: /icons/ha.png
-        href: https://pjhomeassistant.houghton.network
+        href: "https://{{HOMEPAGE_VAR_HomeAssistantURL}}:8123"
         description: Home Assistant
         ping: {{HOMEPAGE_VAR_HomeAssistantURL}}
         widget:
           type: homeassistant
-          url: https://pjhomeassistant.houghton.network
+          url: "https://{{HOMEPAGE_VAR_HomeAssistantURL}}:8123"
           key: {{HOMEPAGE_VAR_HomeAssistantAPI}}
           custom:
 
