@@ -74,6 +74,8 @@ and much more!
 
 The UniFi Controller serves as the central nervous system for managing and configuring UniFi devices, such as switches, firewalls, Voice over IP phones, and access points.
 
+For Self hosting i would advise using the install/updater scripts created by: https://glennr.nl/s/unifi-network-controller
+
 - Home Assistant ( VM using vmdk from Home assistant)
 
 Home Assistant is free and open-source software used for home automation. It serves as an integration platform and smart home hub, allowing users to control smart home devices
@@ -207,7 +209,9 @@ sudo apt install nfs-common
   - XO (Xen Orchestrator)
     - Build a base VM either ubuntu or Debian
     - install  prerequisites git and oppenssl
-    - Use XenOrchestrorInstallerUpfster script to deploy Xen Orchestrator.
+    - Use XenOrchestrorInstallerUpfster script to deploy Xen Orchestrator. https://github.com/ronivay/XenOrchestraInstallerUpdater
+   
+
 
 
 commands 
