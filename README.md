@@ -130,9 +130,6 @@ I mostly use the NAS as datastore but I do currently use the Synology Plex App a
 ![image](https://github.com/user-attachments/assets/31c81bce-bd6a-4c28-8564-890712047836)
 
 
-
-
-
 ### Configure Ubuntu 24.01
 
   -  Ensure system is upto date
@@ -159,12 +156,31 @@ sudo mkswap /swapfile
 sudo swapon /swapfile
 sudo sh -c 'echo "/swapfile none swap sw 0 0" >> /etc/fstab'
 
-  - autoremove
+  - Configure autoremove
 
 sudo apt autoremove -y
 sudo sh -c 'echo "sudo apt autoremove -y" >> /etc/cron.monthly/autoremove'
 sudo chmod +x /etc/cron.monthly/autoremove
 
+- Create NFS Mount Points
+
+Prerequistes: ensure NFS Shares on created on the NAS (NFS Server) . NFS Permisisons are based on IP adddress not username or password
+
+sudo nano /etc/fstab
+
+Add the rquired mount points 
+
+NASIPAdress:/volumename/docker  /mnt/docker nfs nfsvers=4.1,rw,auto 0 0
+NASIPAddress:/volumename/media  /mnt/media nfs nfsvers=4.1,rw,auto 0 0
+
+install nfs client package 
+
+sudo apt install nfs-common
+
+create the mount path
+
+sudo mkdir -p /mnt/docker
+sudo mkdir -p /mnt/media
 
   - Install Docker
 sudo apt install curl apt-transport-https ca-certificates software-properties-common 
