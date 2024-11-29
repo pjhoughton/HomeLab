@@ -133,23 +133,28 @@ I mostly use the NAS as datastore but I do currently use the Synology Plex App a
 ### Configure Ubuntu 24.01
 
   -  Ensure system is upto date
+    
 sudo apt update
 sudo apt upgrade -y
 sudo apt dist-upgrade -y
 
   - Install xcp vmtools
+    
 Mount Disk on server
 sudo mount /dev/cdrom /mnt
 sudo bash /mnt/Linux/install.sh -y
 
   - Set Timezone
+    
 sudo dpkg-reconfigure tzdata
 
   - Install NTP
 
 sudo apt update && sudo apt install ntp -y
 service ntp status
-  - swap file 
+
+  - Create a swap file
+    
 sudo fallocate -l 4G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
@@ -182,31 +187,16 @@ create the mount path
 sudo mkdir -p /mnt/docker
 sudo mkdir -p /mnt/media
 
-  - Install Docker
-sudo apt install curl apt-transport-https ca-certificates software-properties-common 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt install docker-ce -y
-sudo usermod -aG docker $USER
-newgrp
-  - Install docker compose
-mkdir -p ~/.docker/cli-plugins/
+  
 
- curl -SL https://github.com/docker/compose/releases/download/v2.3.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-
- chmod +x  ~/.docker/cli-plugins/docker-compose
-
-  - Set NFS mounts  
+ 
 
 sudo apt install nfs-common
 
 ####  XCP-NG & Xen Orchestrator 
 
-
-
-
-
   - XCP-NG
+    
     - install xcp-ng
       - Download ISO file for XCP-ng from:
  https://mirrors.xcp-ng.org/isos/8.3/xcp-ng-8.3.0.iso?https=1
@@ -244,9 +234,7 @@ sudo openssl req -newkey rsa:4096 \
   
 
 
-
-
-#### Docker Compose 
+#### Install Docker Compose 
 
   - Install Docker 
 
