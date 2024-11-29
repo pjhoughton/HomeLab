@@ -26,14 +26,14 @@ This repo is a constant work-in-progress...
   #### Virtual Machines
   
 - XO 
-  - Purpose: Xen Orchestrator
+  - Purpose: Xen Orchestrator ( Virtualization Manager)
   - Processor: 4
   - RAM: 4GB
   - Storage: 100GB (Thin Provisioned)
   - Operating System: Ubuntu 24.04.1
  
 - HA   
-  - Purpose: Home Assistant
+  - Purpose: Home Assistant ( Home automation)
   - Processor: 4
   - RAM: 4GB
   - Storage: 32GB (Thin Provisioned)
@@ -41,7 +41,7 @@ This repo is a constant work-in-progress...
  
 - Docker   
   - Purpose: Docker Host
-  - Processor: 4x
+  - Processor: 4
   - RAM: 8GB
   - Storage: 100GB (Thin Provisioned)
   - Operating System: Ubuntu 24.04.1
@@ -49,38 +49,7 @@ This repo is a constant work-in-progress...
 
 #### Software
 
-- Xen Orchestrator (Ubuntu VM with XO built from sources) 
-- Unifi SDN  Network Controller ( built into gateway) 
-- Home Assistant ( VM using vmdk from Home assistant)
-- Docker / Docker Compose
-- Home Media Server
-  - Plex (Synology App)
-  - Sonarr (Docker container)
-  - Radarr (Docker container)
-  - Homepage (Docker container)
-
-####  Configure mini PC
-
-  - Enter bios using del key 
-  - Ensure EUFI is enabled not bios 
-  - Ensure PC auto starts after a power failure 
-
-Click on Advanced tab - AMD CBS - FCH Common options - FCH Common options set to always on.
-
-  - Ensure virtualization is enabled 
-
-
-####  Configure NAS
-
-I mostly use the NAS as datastore but I do currently use the Synology Plex App although this could  just as easily be a Docker container.
-
-  - Folder Structure
-
- 
-
-
-
-####  XCP-NG & Xen Orchestrator 
+- Xen Orchestrator (Ubuntu VM with XO built from sources)
 
 Based on Citrix XenServer hypervisor™, XCP-ng is a fully open source virtualization platform. Result of the massive cooperation between individuals as well as companies XCP-ng is now part of the Linux Foundation as an incubated solution under the Xen Project. XCP-ng is very similar as Citrix Hypervisor™ with the notable exception of the restrictions: XCP-ng has none! Unleash the true power of virtualization.
 
@@ -100,6 +69,124 @@ Continuous Replication
 Backup with RAM
 Warm migration
 and much more!
+ 
+- Unifi SDN  Network Controller ( built into gateway) 
+
+The UniFi Controller serves as the central nervous system for managing and configuring UniFi devices, such as switches, firewalls, Voice over IP phones, and access points.
+
+- Home Assistant ( VM using vmdk from Home assistant)
+
+Home Assistant is free and open-source software used for home automation. It serves as an integration platform and smart home hub, allowing users to control smart home devices
+
+- Docker / Docker Compose
+
+Docker is a set of platform as a service (PaaS) products that use OS-level virtualization to deliver software in packages called containers.
+
+- Home Media Server
+
+  - Plex (Synology App)
+
+Plex Media Server (PMS) is free software that enables users to create a client–server for movies, television shows, and music.
+
+  - SABNZB ( Docker Container)
+
+SABnzbd is a multi-platform binary newsgroup downloader.
+The program works in the background and simplifies the downloading verifying and extracting of files from Usenet.
+
+  - Sonarr (Docker container)
+
+Sonarr is a PVR for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new episodes of your favorite shows and will grab, sort and rename them. It can also be configured to automatically upgrade the quality of files already downloaded when a better quality format becomes available.
+
+  - Radarr (Docker container)
+
+Radarr is a movie collection manager for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new movies and will interface with clients and indexers to grab, sort, and rename them. It can also be configured to automatically upgrade the quality of existing files in the library when a better quality format becomes available.
+
+  - Homepage (Docker container)
+
+A modern, fully static, fast, secure fully proxied, highly customizable application dashboard with integrations for over 100 services and translations into multiple languages. Easily configured via YAML files or through docker label discovery.
+
+  - GlueTUN ( Docker container)
+
+Gluetun is a VPN client in a thin Docker container for multiple VPN providers, written in Go, and using OpenVPN or Wireguard, DNS over TLS, with a few proxy servers built-in
+
+
+####  Configure mini PC
+
+  - Enter bios using del key 
+  - Ensure EUFI is enabled not bios 
+  - Ensure PC auto starts after a power failure 
+
+Click on Advanced tab - AMD CBS - FCH Common options - FCH Common options set to always on.
+
+  - Ensure virtualization is enabled 
+
+
+####  Configure NAS
+
+I mostly use the NAS as datastore but I do currently use the Synology Plex App although this could  just as easily be a Docker container.
+
+  - Folder Structure
+   
+![image](https://github.com/user-attachments/assets/31c81bce-bd6a-4c28-8564-890712047836)
+
+
+
+
+
+### Configure Ubuntu 24.01
+
+  -  Ensure system is upto date
+sudo apt update
+sudo apt upgrade -y
+sudo apt dist-upgrade -y
+
+  - Install xcp vmtools
+Mount Disk on server
+sudo mount /dev/cdrom /mnt
+sudo bash /mnt/Linux/install.sh -y
+
+  - Set Timezone
+sudo dpkg-reconfigure tzdata
+
+  - Install NTP
+
+sudo apt update && sudo apt install ntp -y
+service ntp status
+  - swap file 
+sudo fallocate -l 4G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo sh -c 'echo "/swapfile none swap sw 0 0" >> /etc/fstab'
+
+  - autoremove
+
+sudo apt autoremove -y
+sudo sh -c 'echo "sudo apt autoremove -y" >> /etc/cron.monthly/autoremove'
+sudo chmod +x /etc/cron.monthly/autoremove
+
+
+  - Install Docker
+sudo apt install curl apt-transport-https ca-certificates software-properties-common 
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt install docker-ce -y
+sudo usermod -aG docker $USER
+newgrp
+  - Install docker compose
+mkdir -p ~/.docker/cli-plugins/
+
+ curl -SL https://github.com/docker/compose/releases/download/v2.3.1/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+
+ chmod +x  ~/.docker/cli-plugins/docker-compose
+
+  - Set NFS mounts  
+
+sudo apt install nfs-common
+
+####  XCP-NG & Xen Orchestrator 
+
+
 
 
 
