@@ -4,6 +4,9 @@
 
 !*.yml
 !*.yaml
+!example.env
+!*.md
+!.gitignore
 
 
 .env
