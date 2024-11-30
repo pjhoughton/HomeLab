@@ -120,7 +120,27 @@ Gluetun is a VPN client in a thin Docker container for multiple VPN providers, w
 
 Click on Advanced tab - AMD CBS - FCH Common options - FCH Common options set to always on.
 
-  - Ensure virtualization is enabled 
+  - Ensure virtualization is enabled
+  - 
+####  SSH Keys
+
+Its best practice to comnect using SSH Key pairs. The Public key can be given out as required the private key should be kept secret. Where possible you should use a modern algorythm such as ed25519, if a legacy system doesnt support it RSA 2048 or above can be used. Ideally you should set a passphrase, this may not  be possible with automation
+
+
+ - Generate a Key pair
+   
+To generate the key pair open terminal on Windows, Linux  or Mac  and type the following command:
+ 
+   - rsa 
+
+ ssh-keygen -o -t rsa -b 4096 -C "pjhoughton"
+
+   - ed25519
+
+ssh-keygen -a 100 -t ed25519  -C "pjhoughton"
+
+
+ 
 
 
 ####  Configure NAS
@@ -188,8 +208,6 @@ create the mount path
 
 sudo mkdir -p /mnt/docker
 sudo mkdir -p /mnt/media
-
-  
 
  
 
