@@ -152,7 +152,8 @@ I mostly use the NAS as datastore but I do currently use the Synology Plex App a
 
   - Folder Structure
    
-![image](https://github.com/user-attachments/assets/31c81bce-bd6a-4c28-8564-890712047836)
+![format](https://github.com/user-attachments/assets/97d17f1c-1b68-4bfb-91f0-9a2cd831ba03)
+
 
 
 ### Configure Ubuntu 24.01
