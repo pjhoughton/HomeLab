@@ -4,6 +4,11 @@ Home Lab Incorporating XCP-NG hypervisor for VM and Docker compose for container
 
 This repo is a constant work-in-progress... 
 
+#### Diagram
+
+![homelab setup](https://github.com/user-attachments/assets/7deee834-4f35-43c4-8b3f-69f90b4388ee)
+
+
 
 #### Hardware 
 
