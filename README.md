@@ -6,7 +6,8 @@ This repo is a constant work-in-progress...
 
 #### Diagram
 
-![homelab setup](https://github.com/user-attachments/assets/7deee834-4f35-43c4-8b3f-69f90b4388ee)
+![homelab setup](https://github.com/user-attachments/assets/20f216e2-a52b-47d4-816a-0dcf0e2795d9)
+
 #### Hardware 
 
 - Nas (Network Attached Storage) 
