@@ -151,10 +151,8 @@ ssh-keygen -a 100 -t ed25519  -C "pjhoughton"
 I mostly use the NAS as datastore but I do currently use the Synology Plex App although this could  just as easily be a Docker container.
 
   - Folder Structure
-   
-![format](https://github.com/user-attachments/assets/97d17f1c-1b68-4bfb-91f0-9a2cd831ba03)
-
-
+    
+   ![format](https://github.com/user-attachments/assets/e5fbd97f-1979-4adb-8203-d1957cfe74ad)
 
 ### Configure Ubuntu 24.01
 
