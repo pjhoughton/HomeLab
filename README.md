@@ -52,7 +52,7 @@ This repo is a constant work-in-progress...
 
 #### Software
 
-- Xen Orchestrator (Ubuntu VM with XO built from sources)
+- Xen Orchestra (Ubuntu VM with XO built from sources)
 
 Based on Citrix XenServer hypervisor™, XCP-ng is a fully open source virtualization platform. Result of the massive cooperation between individuals as well as companies XCP-ng is now part of the Linux Foundation as an incubated solution under the Xen Project. XCP-ng is very similar as Citrix Hypervisor™ with the notable exception of the restrictions: XCP-ng has none! Unleash the true power of virtualization.
 
@@ -215,7 +215,7 @@ sudo mkdir -p /mnt/media
 
 sudo apt install nfs-common
 
-####  XCP-NG & Xen Orchestrator 
+####  XCP-NG & XXen Orchestra
 
   - XCP-NG
     
@@ -226,7 +226,7 @@ sudo apt install nfs-common
       - Use Rufus to create the bootable USB stick: https://rufus.akeo.ie/
 
 
-  - XO (Xen Orchestrator)
+  - XO (Xen Orchestra)
     - Build a base VM either ubuntu or Debian
     - install  prerequisites git and oppenssl
     - Use XenOrchestrorInstallerUpfster script to deploy Xen Orchestrator. https://github.com/ronivay/XenOrchestraInstallerUpdater
