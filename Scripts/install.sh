@@ -1,7 +1,22 @@
 #!/bin/bash
 
+
 # Get the hostname of the system 
 HOSTNAME=$(hostname)
+
+# List of packages to check and install if necessary
+packages=("aptitude" "openssh-server" "package3")
+
+for pkg in "${packages[@]}"; do
+    if dpkg -l | grep -q "^ii  $pkg "; then
+        echo "$pkg is already installed."
+    else``
+        echo "$pkg is not installed. Installing..."
+        sudo apt-get install -y $pkg
+    fi
+done
+
+echo "Package check and installation complete."
 
 # Update package list
 sudo apt-get update
@@ -12,58 +27,52 @@ sudo aptitude safe-upgrade -y
 # Clean up unnecessary packages
 sudo apt-get autoremove -y
 
-# List of packages to check and install if necessary
-packages=("aptitude" "openssh-server" "package3")
-
-for pkg in "${packages[@]}"; do
-    if dpkg -l | grep -q "^ii  $pkg "; then
-        echo "$pkg is already installed."
-    else
-        echo "$pkg is not installed. Installing..."
-        sudo apt-get install -y $pkg
-    fi
-done
-
-echo "Package check and installation complete."
-
-# Create Swap File
-
+# Create a 4GB swap file
+echo "Creating a 4GB swap file..."
 sudo fallocate -l 4G /swapfile
 
-# Set correct permissions
-
+# Set the correct permissions
+echo "Setting the correct permissions..."
 sudo chmod 600 /swapfile
 
-# set up swap 
-
+# Set up the swap area
+echo "Setting up the swap area..."
 sudo mkswap /swapfile
 
-# enable swap
-
+# Enable the swap file
+echo "Enabling the swap file..."
 sudo swapon /swapfile
 
-# Make swap file permenent
-
+# Make the swap file permanent
+echo "Making the swap file permanent..."
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
+# Verify the swap file is active
+echo "Verification:"
+sudo swapon --show
+free -h
 
 
-# Disable IPv6 by adding configuration to sysctl.conf
 
+# Disable IPv6
 echo "Disabling IPv6..."
-sudo sed -i 's/^#net.ipv6.conf.all.disable_ipv6 = 1/net.ipv6.conf.all.disable_ipv6 = 1/' /etc/sysctl.conf
-sudo sed -i 's/^#net.ipv6.conf.default.disable_ipv6 = 1/net.ipv6.conf.default.disable_ipv6 = 1/' /etc/sysctl.conf
-sudo sed -i 's/^#net.ipv6.conf.lo.disable_ipv6 = 1/net.ipv6.conf.lo.disable_ipv6 = 1/' /etc/sysctl.conf
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1
 
-# Apply the changes
+# Make changes persistent
+echo "Making changes persistent..."
+echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+
+# Apply changes
+echo "Applying changes..."
 sudo sysctl -p
 
-echo "IPv6 has been disabled."
-
-
-
-
-
+# Verify that IPv6 is disabled
+echo "IPv6 has been disabled. Verification:"
+cat /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 
 
