@@ -27,6 +27,19 @@ sudo aptitude safe-upgrade -y
 # Clean up unnecessary packages
 sudo apt-get autoremove -y
 
+# make autoremove run monthly 
+
+sudo sh -c 'echo "sudo apt autoremove -y" >> /etc/cron.monthly/autoremove'
+
+sudo chmod +x /etc/cron.monthly/autoremove
+
+# Set the timezone to London
+timedatectl set-timezone Europe/London
+
+# Verify the change
+timedatectl
+
+
 # Create a 4GB swap file
 echo "Creating a 4GB swap file..."
 sudo fallocate -l 4G /swapfile
