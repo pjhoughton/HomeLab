@@ -13,7 +13,7 @@ sudo aptitude safe-upgrade -y
 sudo apt-get autoremove -y
 
 if [[ "$HOSTNAME" == "docker" ]]; then 
-echo "Performing task A for $HOSTNAME" # Add the commands for task A here sudo apt-get update
+echo "Performing tasks for $HOSTNAME" # Add the commands for task A here sudo apt-get update
 
 # update docker
 
@@ -21,7 +21,7 @@ cd docker-compose
 docker compose pull
 
 elif [[ "$HOSTNAME" == "xo" ]]; then 
-echo "Performing task B for $HOSTNAME" 
+echo "Performing tasks for $HOSTNAME" 
 
 # update orchestra
 
