@@ -12,7 +12,7 @@ sudo apt-add-repository ppa:git-core/ppa
 
 
 # List of packages to check and install if necessary
-packages=("aptitude" "openssh-server" "git")
+packages=("aptitude" "openssh-server" "git" "xe-guest-utilities")
 
 for pkg in "${packages[@]}"; do
     if dpkg -l | grep -q "^ii  $pkg "; then
