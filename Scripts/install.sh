@@ -5,7 +5,7 @@
 HOSTNAME=$(hostname)
 
 # List of packages to check and install if necessary
-packages=("aptitude" "openssh-server" "package3")
+packages=("aptitude" "openssh-server" "git")
 
 for pkg in "${packages[@]}"; do
     if dpkg -l | grep -q "^ii  $pkg "; then
