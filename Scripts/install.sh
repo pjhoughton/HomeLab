@@ -4,6 +4,13 @@
 # Get the hostname of the system 
 HOSTNAME=$(hostname)
 
+
+# add repository 
+
+
+sudo apt-add-repository ppa:git-core/ppa
+
+
 # List of packages to check and install if necessary
 packages=("aptitude" "openssh-server" "git")
 
