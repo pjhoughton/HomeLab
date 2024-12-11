@@ -10,7 +10,7 @@ services:
       - TZ=${TZ}
 
       - HOMEPAGE_VAR_DockerURL=${HOMEPAGE_VAR_DockerURL}
-      - HOMEPAGE_VAR_PJHomeserverURL=${HOMEPAGE_VAR_PJHomeserverURL}
+      - HOMEPAGE_VAR_HomeserverURL=${HOMEPAGE_VAR_HomeserverURL}
       - HOMEPAGE_VAR_HomeAssistantURL=${HOMEPAGE_VAR_HomeAssistantURL}
       - HOMEPAGE_VAR_UnifiURL=${HOMEPAGE_VAR_UnifiURL}
       - HOMEPAGE_VAR_XOURL=${HOMEPAGE_VAR_XOURL}
@@ -21,6 +21,7 @@ services:
       - HOMEPAGE_VAR_SonarrAPI=${HOMEPAGE_VAR_SonarrAPI}
       - HOMEPAGE_VAR_SabnzbAPI=${HOMEPAGE_VAR_SabnzbAPI}
       - HOMEPAGE_VAR_PlexAPI=${HOMEPAGE_VAR_PlexAPI}
+      - HOMEPAGE_VAR_LidarrAPI=${HOMEPAGE_VAR_LidarrAPI}
       - HOMEPAGE_VAR_CoinmarketcapAPI=${HOMEPAGE_VAR_CoinmarketcapAPI}
       - HOMEPAGE_VAR_HomeAssistantAPI=${HOMEPAGE_VAR_HomeAssistantAPI}
       - HOMEPAGE_VAR_openweathermapAPI=${HOMEPAGE_VAR_openweathermapAPI}
@@ -34,6 +35,9 @@ services:
       - ${DockerDir}/homepage/public/icons:/app/public/icons
       - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
     restart: unless-stopped
+    depends_on: 
+      - sonarr
+
 
 
 ######### VPN  ##########
@@ -49,6 +53,8 @@ services:
       - 8080:8080 # sabnzb web interface
       - 8989:8989 # radarr
       - 7878:7878 # sonarr
+      - 8686:8686 # lidarr
+      - 6767:6767 # bazarr
     volumes:
       - ${DockerDir}/gluetun:/gluetun
     environment:
@@ -61,6 +67,7 @@ services:
       - SERVER_COUNTRIES=${SERVER_COUNTRIES}
     restart: unless-stopped
 
+
 ######### SABNZB Downloader ##########
 
   sabnzbd:
@@ -71,9 +78,9 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${DockerDir}/sabnzb:/config
-      - ${MediaDir}/Downloads/complete:/downloads 
-      - ${MediaDir}/Downloads/incomplete:/incomplete-downloads
+      - ${DockerDir}/sabnzbd:/config
+      - ${MediaDir}/downloads/complete:/downloads 
+      - ${MediaDir}/downloads/incomplete:/incomplete-downloads
 # Not needed as using gluetun as vpn 
 #   ports:
 #     - 8080:8080
@@ -94,13 +101,13 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${DockerDir}/Radarr:/config
-      - ${MediaDir}/Video/Movies:/movies 
-      - ${MediaDir}/Downloads/complete:/downloads 
-# Not needed as using gluetun as vpn 
-#   ports:
-#     - 7878:7878
+      - ${DockerDir}/radarr:/config
+      - ${MediaDir}/video/movies:/movies
+      - ${MediaDir}/downloads/complete:/downloads 
+# Not needed as using gluetun 
     restart: unless-stopped
+    depends_on: 
+      - sabnzbd
     network_mode: service:gluetun  # we are using gluetun vpn 
 
 ######### Sonarr TV Shows Downloads ##########
@@ -114,14 +121,53 @@ services:
       - TZ=${TZ}
 
     volumes:
-      - ${DockerDir}/Sonarr:/config
-      - ${MediaDir}/Video/TV-Shows:/tv 
-      - ${MediaDir}/Downloads/complete:/downloads
+      - ${DockerDir}/sonarr:/config
+      - ${MediaDir}/video/tv-shows:/tv 
+      - ${MediaDir}/downloads/complete:/downloads
 # Not needed as using gluetun as vpn 
 #   ports:
 #     - 8989:8989
     restart: unless-stopped
+    depends_on: 
+      - radarr
     network_mode: service:gluetun  # we are using gluetun vpn 
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DockerDir}/lidarr:/config
+      - ${MediaDir}/downloads/complete:/downloads 
+      - ${MediaDir}/music:/music 
+# Not needed as using gluetun as vpn 
+#   ports:
+#      - 8686:8686
+    restart: unless-stopped
+    depends_on: 
+      - sonarr
+    network_mode: service:gluetun  # we are using gluetun vpn 
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DockerDir}/bazarr:/config
+      - ${MediaDir}/video/tv-shows:/tv 
+      - ${MediaDir}/video/movies:/movies
+
+
+#    ports:
+ #     - 6767:6767
+    restart: unless-stopped
+    network_mode: service:gluetun  # we are using gluetun vpn 
+
 
 
 

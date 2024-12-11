@@ -5,18 +5,18 @@
 - Media:
     - Plex:
         icon: plex.png
-        href: "https://{{HOMEPAGE_VAR_PJHomeserverURL}}:32400/web"
+        href: "https://{{HOMEPAGE_VAR_HomeserverURL}}:32400/web"
 
-        description: Plex
-        ping: {{HOMEPAGE_VAR_PJHomeserverURL}}
+        description: Plex Media Management
+        ping: {{HOMEPAGE_VAR_HomeserverURL}}
         widget:
           type: plex 
-          url: "https://{{HOMEPAGE_VAR_PJHomeserverURL}}:32400"
+          url: "https://{{HOMEPAGE_VAR_HomeserverURL}}:32400"
           key: {{HOMEPAGE_VAR_PlexAPI}}
     - Sonarr:
         icon: sonarr.png
         href: "http://{{HOMEPAGE_VAR_DockerURL}}:8989"
-        description: Series management
+        description: TV Series Management
         ping: "{{HOMEPAGE_VAR_DockerURL}}:8989"
         widget:
           type: sonarr
@@ -25,16 +25,25 @@
     - Radarr:
         icon: radarr.png
         href: "http://{{HOMEPAGE_VAR_DockerURL}}:7878"
-        description: Movie management
+        description: Movie Management
         ping: "{{HOMEPAGE_VAR_DockerURL}}:7878"
         widget:
           type: radarr
           url: "http://{{HOMEPAGE_VAR_DockerURL}}:7878"
           key: {{HOMEPAGE_VAR_RadarrAPI}}
+    - lidarr:
+        icon: lidarr.png
+        href: "http://{{HOMEPAGE_VAR_DockerURL}}:8686"
+        description: Music Management
+        ping: "{{HOMEPAGE_VAR_DockerURL}}:8686"
+        widget:
+          type: lidarr
+          url: "http://{{HOMEPAGE_VAR_DockerURL}}:8686"
+          key: {{HOMEPAGE_VAR_LidarrAPI}}
     - sabnzb:
         icon: /icons/sabnzb.png
         href: "http://{{HOMEPAGE_VAR_DockerURL}}:8080"
-        description: NZB Download 
+        description: NZB Download Management
         ping: "{{HOMEPAGE_VAR_DockerURL}}:8080"
         widget:
           type: sabnzbd
@@ -57,27 +66,27 @@
         description: XCP-NG1 VM Host
         ping: {{HOMEPAGE_VAR_XCPNG1URL}}
 
-    - PJHomeassistant:
+    - Homeassistant:
         icon: /icons/ha.png
         href: "https://{{HOMEPAGE_VAR_HomeAssistantURL}}:8123"
-        description: Home Assistant
+        description: Home Assistant - Home Automation
         ping: {{HOMEPAGE_VAR_HomeAssistantURL}}
-        widget:
-          type: homeassistant
-          url: "https://{{HOMEPAGE_VAR_HomeAssistantURL}}:8123"
-          key: {{HOMEPAGE_VAR_HomeAssistantAPI}}
-          custom:
+       # widget:
+       #   type: homeassistant
+       #   url: "https://{{HOMEPAGE_VAR_HomeAssistantURL}}:8123"
+        #  key: {{HOMEPAGE_VAR_HomeAssistantAPI}}
+        #  custom:
 
 
 
-    - PJHomeserver:
+    - Homeserver:
         icon: /icons/dsm.png
-        href: "https://{{HOMEPAGE_VAR_PJHomeserverURL}}:4600"
-        description: PJHomeserver
-        ping: {{HOMEPAGE_VAR_PJHomeserverURL}}
+        href: "https://{{HOMEPAGE_VAR_HomeserverURL}}:4600"
+        description: Homeserver NAS
+        ping: {{HOMEPAGE_VAR_HomeserverURL}}
         widget:
           type: diskstation
-          url: "https://{{HOMEPAGE_VAR_PJHomeserverURL}}:4600"
+          url: "https://{{HOMEPAGE_VAR_HomeserverURL}}:4600"
           username: {{HOMEPAGE_VAR_NasUser}}
           password: {{HOMEPAGE_VAR_NASPassword}}
     - Unifi Controller:

@@ -13,17 +13,17 @@ useEqualHeights: true
 hideErrors: true
 layout: 
   #Auto-Discovered1:
-   # style: row
+   # style: column
     #columns: 4
   Media:
-    style: row
-    columns: 4
+    style: column
+    #columns: 4
   Admin Console:
-    style: row
-    columns: 3
+    style: column
+    #columns: 3
   Markets:
-    style: row
-    columns: 2
+    style: column
+    #columns: 2
 
 providers:
 
