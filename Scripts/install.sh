@@ -11,19 +11,34 @@ HOSTNAME=$(hostname)
 sudo apt-add-repository ppa:git-core/ppa
 
 
-# List of packages to check and install if necessary
-packages=("aptitude" "openssh-server" "git" "xe-guest-utilities")
+# Function to check if a package is installed
+check_install() {
+    PACKAGE=$1
+    dpkg -l | grep -qw $PACKAGE || sudo apt-get install -y $PACKAGE
+}
 
-for pkg in "${packages[@]}"; do
-    if dpkg -l | grep -q "^ii  $pkg "; then
-        echo "$pkg is already installed."
-    else``
-        echo "$pkg is not installed. Installing..."
-        sudo apt-get install -y $pkg
-    fi
-done
+# Update package information
+echo "Updating package information..."
+sudo apt-get update
 
-echo "Package check and installation complete."
+# Check and install xe-guest-utilities
+echo "Checking and installing xe-guest-utilities..."
+check_install xe-guest-utilities
+
+# Check and install OpenSSH server
+echo "Checking and installing OpenSSH server..."
+check_install openssh-server
+
+# Check and install git
+echo "Checking and installing git..."
+check_install git
+
+# Check and install aptitude
+echo "Checking and installing aptitude..."
+check_install aptitude
+
+echo "All requested packages have been checked and installed if necessary!"
+
 
 # Update package list
 sudo apt-get update
