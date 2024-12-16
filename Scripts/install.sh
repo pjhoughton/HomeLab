@@ -1,6 +1,15 @@
 #!/bin/bash
 # Get the hostname of the system 
+
+# Declare a global variable
+
 HOSTNAME=$(hostname)
+DEFAULT_TIME_ZONE="Europe/London"
+DEFAULT_SWAP_FILE="4G"
+DEFAULT_DOCKER_FILEPATH="docker-compose"
+DEFAULT_XO_FILEPATH="XenOrchestraInstallerUpdater"
+
+
 
 # Function to update the system
 update_system() {
@@ -17,7 +26,7 @@ check_install() {
 
 # Function to change the time zone
 change_time_zone() {
-  local time_zone=${1:-"Europe/London"}
+  local time_zone=${1:-$DEFAULT_TIME_ZONE}
 
   echo "Changing time zone to $time_zone..."
 
@@ -33,7 +42,7 @@ change_time_zone() {
 
 # Function to create a swap file with a default size of 4GB if no size is specified
 create_swap_file() {
-  local swap_size=${1:-4G}
+  local swap_size=${1:-$DEFAULT_SWAP_FILE}
 
   echo "Creating a ${swap_size} swap file..."
 
@@ -78,30 +87,20 @@ stop_service() {
 
 # Function to pull Docker Compose images from a specified location
 pull_docker_compose_from_location() {
-  local compose_file_path=${1:-/docker-compose/docker-compose.yml}
-  local compose_dir
+  echo "Pulling Docker"
+  cd "$DEFAULT_DOCKER_FILEPATH" || exit
 
-  # Extract the directory from the specified path
-  compose_dir=$(dirname "$compose_file_path")
+  echo "Pulling Docker Compose images using $compose_file_path..."
+  docker compose pull
 
-  # Check if the specified Docker Compose file exists
-  if [ -f "$compose_file_path" ]; then
-    echo "Changing to directory $compose_dir..."
-    cd "$compose_dir" || exit
-
-    echo "Pulling Docker Compose images using $compose_file_path..."
-    docker-compose -f $(basename "$compose_file_path") pull
-
-    echo "Docker Compose images pulled successfully."
-  else
-    echo "Docker Compose file $compose_file_path not found."
-    exit 1
-  fi
+  echo "Docker Compose images pulled successfully."
 }
 
 
 # Function Initial Install
 Initial_Install() {
+
+echo "Initial Update"
 
 # Update system
 
@@ -149,11 +148,41 @@ sudo chmod +x /etc/cron.monthly/autoremove
 }
 
 
+app_update() {
+update_system
+
+if [[ "$HOSTNAME" == "docker" ]]; then 
+echo "Performing tasks for $HOSTNAME" 
+
+# update docker
+
+pull_docker_compose_from_location
+
+elif [[ "$HOSTNAME" == "xo" ]]; then 
+echo "Performing tasks for $HOSTNAME" 
+
+# update XO orchestra
+
+cd "$DEFAULT_XO_FILEPATH" || exit
+sudo bash xo-install.sh --update
+
+fi
+
+
+echo "Completed updates for $HOSTNAME" 
+
+
+}
+
+
 
 # Check the provided option and execute the corresponding function
 case "$1" in
   -u|--update)
     update_system
+    ;;
+  -au|--appupdate)
+    app_update
     ;;
   -ii|--initialinstall)
     Initial_Install
