@@ -83,6 +83,32 @@ stop_service() {
   sudo systemctl stop $service_name
 }
 
+
+# Function to pull Docker Compose images and restart updated containers
+docker_compose_pull_and_restart() {
+    # Change to the directory containing the docker-compose.yml file
+    local compose_dir=$1
+    cd $compose_dir
+
+    echo "Pulling the latest Docker Compose images..."
+    docker-compose pull
+
+    echo "Checking if there are any updates..."
+    updated=$(docker-compose pull | grep -i "up to date")
+    
+    if [ -z "$updated" ]; then
+        echo "Updates detected. Restarting containers..."
+        docker-compose up -d
+        echo "Containers restarted."
+    else
+        echo "No updates detected. Containers are up to date."
+    fi
+}
+
+# Call the function with the directory containing the docker-compose.yml file
+docker_compose_pull_and_restart /path/to/your/docker-compose-directory
+
+
 # Function to pull Docker Compose images from a specified location
 pull_docker_compose_from_location() {
   echo "Pulling Docker"
