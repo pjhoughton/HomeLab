@@ -105,8 +105,26 @@ docker_compose_pull_and_restart() {
     fi
 }
 
-# Call the function with the directory containing the docker-compose.yml file
-docker_compose_pull_and_restart /path/to/your/docker-compose-directory
+# Function to update Docker Compose
+update_docker_compose() {
+    # Get the latest version number
+    local latest_version=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+    echo "Latest Docker Compose version is $latest_version"
+
+    # Download the latest version
+    echo "Downloading Docker Compose $latest_version..."
+    sudo curl -L "https://github.com/docker/compose/releases/download/${latest_version}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+    # Apply executable permissions to the binary
+    echo "Applying executable permissions to Docker Compose binary..."
+    sudo chmod +x /usr/local/bin/docker-compose
+
+    # Verify the installation
+    echo "Verifying Docker Compose installation..."
+    docker-compose --version
+}
+
+
 
 
 # Function to pull Docker Compose images from a specified location
