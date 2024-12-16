@@ -1,15 +1,14 @@
 #!/bin/bash
 # Get the hostname of the system 
 
-# Declare a global variable
+# Declare global variables
 
 HOSTNAME=$(hostname)
 DEFAULT_TIME_ZONE="Europe/London"
 DEFAULT_SWAP_FILE="4G"
 DEFAULT_DOCKER_FILEPATH="docker-compose"
 DEFAULT_XO_FILEPATH="XenOrchestraInstallerUpdater"
-
-
+DEFAULT_INITIAL_APPS=("xe-guest-utilities" "openssh-server" "git" "aptitude" "cockpit")
 
 # Function to update the system
 update_system() {
@@ -84,7 +83,6 @@ stop_service() {
   sudo systemctl stop $service_name
 }
 
-
 # Function to pull Docker Compose images from a specified location
 pull_docker_compose_from_location() {
   echo "Pulling Docker"
@@ -96,85 +94,53 @@ pull_docker_compose_from_location() {
   echo "Docker Compose images pulled successfully."
 }
 
-
-# Function Initial Install
+# Function for Initial Install
 Initial_Install() {
+  echo "Initial Update"
 
-echo "Initial Update"
+  # Update system
+  update_system
 
-# Update system
+  for initialapp in "${DEFAULT_INITIAL_APPS[@]}"; do
+    echo "Checking and installing $initialapp"
+    check_install $initialapp
+  done
 
-update_system
+  echo "All requested packages have been checked and installed if necessary!"
 
-# Check and install xe-guest-utilities
+  # Change Timezone
+  change_time_zone
 
-echo "Checking and installing xe-guest-utilities..."
-check_install xe-guest-utilities
+  # Create Swap file
+  create_swap_file
 
-# Check and install OpenSSH server
+  # Disable IPV6
+  disable_ipv6
 
-echo "Checking and installing OpenSSH server..."
-check_install openssh-server
-
-# Check and install git
-
-echo "Checking and installing git..."
-check_install git
-
-# Check and install aptitude
-
-echo "Checking and installing aptitude..."
-check_install aptitude
-
-echo "All requested packages have been checked and installed if necessary!"
-
-# Change Timezone
-
-change_time_zone
-
-# Create Swap file
-create_swap_file
-
-# Disable IPV6
-
-disable_ipv6
-
-# make autoremove run monthly 
-
-sudo sh -c 'echo "sudo apt autoremove -y" >> /etc/cron.monthly/autoremove'
-sudo chmod +x /etc/cron.monthly/autoremove
-
-
+  # Make autoremove run monthly 
+  sudo sh -c 'echo "sudo apt autoremove -y" >> /etc/cron.monthly/autoremove'
+  sudo chmod +x /etc/cron.monthly/autoremove
 }
-
 
 app_update() {
-update_system
+  update_system
 
-if [[ "$HOSTNAME" == "docker" ]]; then 
-echo "Performing tasks for $HOSTNAME" 
+  if [[ "$HOSTNAME" == "docker" ]]; then 
+    echo "Performing tasks for $HOSTNAME" 
 
-# update docker
+    # Update Docker
+    pull_docker_compose_from_location
 
-pull_docker_compose_from_location
+  elif [[ "$HOSTNAME" == "xo" ]]; then 
+    echo "Performing tasks for $HOSTNAME" 
 
-elif [[ "$HOSTNAME" == "xo" ]]; then 
-echo "Performing tasks for $HOSTNAME" 
+    # Update XO orchestra
+    cd "$DEFAULT_XO_FILEPATH" || exit
+    sudo bash xo-install.sh --update
+  fi
 
-# update XO orchestra
-
-cd "$DEFAULT_XO_FILEPATH" || exit
-sudo bash xo-install.sh --update
-
-fi
-
-
-echo "Completed updates for $HOSTNAME" 
-
-
+  echo "Completed updates for $HOSTNAME" 
 }
-
-
 
 # Check the provided option and execute the corresponding function
 case "$1" in
@@ -195,8 +161,7 @@ case "$1" in
     stop_service "$2"
     ;;
   *)
-    echo "Usage: $0 {-u|--update} | {-ii|--initialinstall} {-s|--stop <service_name>}"
+    echo "Usage: $0 {-u|--update} | {-au|--appupdate} | {-ii|--initialinstall} | {-s|--stop <service_name>}"
     exit 1
     ;;
 esac
-
