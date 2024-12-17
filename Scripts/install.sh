@@ -95,6 +95,107 @@ setup_firewall() {
     sudo ufw status
 }
 
+
+# Function to install Docker and Docker Compose from sources
+install_docker_and_compose() {
+    # Update package information and install prerequisites
+    echo "Updating package information and installing prerequisites..."
+    sudo apt-get update
+    sudo apt-get install -y \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        software-properties-common
+
+    # Add Docker's official GPG key
+    echo "Adding Docker's official GPG key..."
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+    # Set up the Docker stable repository
+    echo "Setting up the Docker stable repository..."
+    sudo add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) \
+        stable"
+
+    # Update package information again
+    echo "Updating package information again..."
+    sudo apt-get update
+
+    # Install Docker CE (Community Edition)
+    echo "Installing Docker CE (Community Edition)..."
+    sudo apt-get install -y docker-ce
+
+    # Download the latest version of Docker Compose
+    local latest_version=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K.*?(?=")')
+    echo "Downloading Docker Compose version $latest_version..."
+    sudo curl -L "https://github.com/docker/compose/releases/download/${latest_version}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+    # Apply executable permissions to the Docker Compose binary
+    echo "Applying executable permissions to Docker Compose binary..."
+    sudo chmod +x /usr/local/bin/docker-compose
+
+    # Verify the installations
+    echo "Verifying Docker installation..."
+    docker --version
+    echo "Verifying Docker Compose installation..."
+    docker-compose --version
+
+    echo "Docker and Docker Compose have been successfully installed!"
+}
+
+# Function to install Ansible
+install_ansible() {
+    # Update package information
+    echo "Updating package information..."
+    sudo apt-get update
+
+    # Install prerequisites
+    echo "Installing prerequisites..."
+    sudo apt-get install -y \
+        software-properties-common
+
+    # Add Ansible PPA
+    echo "Adding Ansible PPA..."
+    sudo add-apt-repository --yes --update ppa:ansible/ansible
+
+    # Install Ansible
+    echo "Installing Ansible..."
+    sudo apt-get install -y ansible
+
+    # Verify the installation
+    echo "Verifying Ansible installation..."
+    ansible --version
+}
+
+# Call the function
+install_ansible
+
+
+# Function to install Xen Orchestra using the installer/updater script
+install_xo() {
+    # Update package information and install prerequisites
+    echo "Updating package information and installing prerequisites..."
+    sudo apt-get update
+    sudo apt-get install -y \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        software-properties-common
+
+    # Download and run the installer/updater script from GitHub
+    echo "Downloading and running the Xen Orchestra installer/updater script..."
+    sudo curl -fsSL https://raw.githubusercontent.com/ronivay/XenOrchestraInstallerUpdater/master/xo-install.sh | sudo bash
+
+    # Verify the installation
+    echo "Verifying Xen Orchestra installation..."
+    xo --version
+}
+
+# Call the function
+install_xo
+
+
 # Function to stop a service
 stop_service() {
   local service_name=$1
