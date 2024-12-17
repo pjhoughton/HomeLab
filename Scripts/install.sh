@@ -9,6 +9,7 @@ DEFAULT_SWAP_FILE="4G"
 DEFAULT_DOCKER_FILEPATH="docker-compose"
 DEFAULT_XO_FILEPATH="XenOrchestraInstallerUpdater"
 DEFAULT_INITIAL_APPS=("xe-guest-utilities" "openssh-server" "git" "aptitude" "cockpit")
+GLOBAL_PORTS=("22" "80" "443" "9090")
 
 # Function to update the system
 update_system() {
@@ -76,6 +77,24 @@ EOF'
   echo "IPv6 has been disabled. A reboot is required for changes to take full effect."
 }
 
+# Function to set up the firewall and allow all outgoing connections
+setup_firewall() {
+    # Enable UFW firewall
+    sudo ufw enable
+
+    # Allow all outgoing connections
+    sudo ufw default allow outgoing
+
+    # Loop through the global ports and allow them
+    for port in "${GLOBAL_PORTS[@]}"; do
+        echo "Allowing traffic on port $port"
+        sudo ufw allow $port
+    done
+
+    # Check the status of the firewall
+    sudo ufw status
+}
+
 # Function to stop a service
 stop_service() {
   local service_name=$1
@@ -83,11 +102,10 @@ stop_service() {
   sudo systemctl stop $service_name
 }
 
-
 # Function to pull Docker Compose images and restart updated containers
 docker_compose_pull_and_restart() {
     # Change to the directory containing the docker-compose.yml file
-    local compose_dir=$1
+    local compose_dir=${1:-$DEFAULT_DOCKER_FILEPATH}
     cd $compose_dir
 
     echo "Pulling the latest Docker Compose images..."
@@ -124,20 +142,6 @@ update_docker_compose() {
     docker-compose --version
 }
 
-
-
-
-# Function to pull Docker Compose images from a specified location
-pull_docker_compose_from_location() {
-  echo "Pulling Docker"
-  cd "$DEFAULT_DOCKER_FILEPATH" || exit
-
-  echo "Pulling Docker Compose images using $compose_file_path..."
-  docker compose pull
-
-  echo "Docker Compose images pulled successfully."
-}
-
 # Function for Initial Install
 Initial_Install() {
   echo "Initial Update"
@@ -164,6 +168,9 @@ Initial_Install() {
   # Make autoremove run monthly 
   sudo sh -c 'echo "sudo apt autoremove -y" >> /etc/cron.monthly/autoremove'
   sudo chmod +x /etc/cron.monthly/autoremove
+  
+  # Enable Firewall
+  setup_firewall
 }
 
 app_update() {
@@ -173,7 +180,8 @@ app_update() {
     echo "Performing tasks for $HOSTNAME" 
 
     # Update Docker
-    pull_docker_compose_from_location
+    update_docker_compose
+    docker_compose_pull_and_restart
 
   elif [[ "$HOSTNAME" == "xo" ]]; then 
     echo "Performing tasks for $HOSTNAME" 
@@ -186,26 +194,92 @@ app_update() {
   echo "Completed updates for $HOSTNAME" 
 }
 
-# Check the provided option and execute the corresponding function
-case "$1" in
-  -u|--update)
-    update_system
-    ;;
-  -au|--appupdate)
-    app_update
-    ;;
-  -ii|--initialinstall)
-    Initial_Install
-    ;;
-  -s|--stop)
-    if [ -z "$2" ]; then
-      echo "Service name is required for stopping a service"
-      exit 1
-    fi
-    stop_service "$2"
-    ;;
-  *)
-    echo "Usage: $0 {-u|--update} | {-au|--appupdate} | {-ii|--initialinstall} | {-s|--stop <service_name>}"
-    exit 1
-    ;;
-esac
+# Function to display help information
+display_help() {
+    echo "Usage: $0 {option}"
+    echo
+    echo "Options:"
+    echo "  -u, --update           Update the system"
+    echo "  -au, --appupdate       Update applications and services"
+    echo "  -ii, --initialinstall  Perform initial installation and setup"
+    echo "  -s, --stop <service_name>  Stop a specific service"
+    echo "  -h, --help             Display this help message"
+}
+
+# Function to display the menu
+display_menu() {
+    clear
+    echo "=================================="
+    echo " System Management Menu"
+    echo "=================================="
+    echo "1. Update System"
+    echo "2. App Update"
+    echo "3. Initial Install"
+    echo "4. Stop Service"
+    echo "5. Display Help"
+    echo "6. Exit"
+    echo "=================================="
+    echo -n "Enter your choice [1-6]: "
+}
+
+# Main execution
+if [ $# -eq 0 ]; then
+    while true; do
+        display_menu
+        read -r choice
+        case $choice in
+            1)
+                update_system
+                ;;
+            2)
+                app_update
+                ;;
+            3)
+                Initial_Install
+                ;;
+            4)
+                echo -n "Enter the service name to stop: "
+                read -r service_name
+                stop_service "$service_name"
+                ;;
+            5)
+                display_help
+                ;;
+            6)
+                echo "Exiting..."
+                break
+                ;;
+            *)
+                echo "Invalid choice, please try again."
+                ;;
+        esac
+        echo -n "Press any key to continue..."
+        read -r -n 1
+    done
+else
+    case "$1" in
+        -u|--update)
+            update_system
+            ;;
+        -au|--appupdate)
+            app_update
+            ;;
+        -ii|--initialinstall)
+            Initial_Install
+            ;;
+        -s|--stop)
+            if [ -z "$2" ]; then
+                echo "Service name is required for stopping a service"
+                exit 1
+            fi
+            stop_service "$2"
+            ;;
+        -h|--help)
+            display_help
+            ;;
+        *)
+            echo "Invalid option. Use -h or --help for usage information."
+            exit 1
+            ;;
+    esac
+fi
