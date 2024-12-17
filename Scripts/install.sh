@@ -96,6 +96,58 @@ setup_firewall() {
 }
 
 
+# Function to create SSH keys and copy public keys to multiple remote computers
+create_and_copy_ssh_keys() {
+    local comment
+    local remote_computers
+
+    # Prompt for comment if not provided as a variable
+    if [ -z "$1" ]; then
+        read -p "Enter comment for SSH keys: " comment
+    else
+        comment=$1
+    fi
+
+    # Prompt for remote computers if not provided as a variable
+    if [ -z "$2" ]; then
+        read -p "Enter remote computers (user@host user@host ...): " -a remote_computers
+    else
+        IFS=' ' read -r -a remote_computers <<< "$2"
+    fi
+
+    # Ensure .ssh directory exists locally
+    if [ ! -d "$HOME/.ssh" ]; then
+        echo "Creating .ssh directory locally..."
+        mkdir -p "$HOME/.ssh"
+    fi
+
+    # Generate an ed25519 SSH key with the provided comment
+    echo "Generating ed25519 SSH key with comment '$comment'..."
+    ssh-keygen -t ed25519 -C "$comment" -f "$HOME/.ssh/id_ed25519" -N ""
+
+    # Generate an RSA 4096-bit SSH key with the provided comment
+    echo "Generating RSA 4096-bit SSH key with comment '$comment'..."
+    ssh-keygen -t rsa -b 4096 -C "$comment" -f "$HOME/.ssh/id_rsa" -N ""
+
+    # Copy the public keys to each remote computer
+    for remote in "${remote_computers[@]}"; do
+        echo "Ensuring .ssh directory exists on $remote..."
+        ssh $remote 'mkdir -p ~/.ssh'
+
+        echo "Copying ed25519 public key to $remote..."
+        ssh-copy-id -i "$HOME/.ssh/id_ed25519.pub" $remote
+
+        echo "Copying RSA 4096-bit public key to $remote..."
+        ssh-copy-id -i "$HOME/.ssh/id_rsa.pub" $remote
+    done
+
+    echo "SSH keys have been created and copied to all specified remote computers!"
+}
+
+# Call the function with optional arguments for comment and remote computers
+create_and_copy_ssh_keys "$1" "$2"
+
+
 # Function to install Docker and Docker Compose from sources
 install_docker_and_compose() {
     # Update package information and install prerequisites
