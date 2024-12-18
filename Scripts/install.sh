@@ -2,14 +2,32 @@
 # Get the hostname of the system 
 
 # Declare global variables
-
 HOSTNAME=$(hostname)
 DEFAULT_TIME_ZONE="Europe/London"
 DEFAULT_SWAP_FILE="4G"
 DEFAULT_DOCKER_FILEPATH="docker-compose"
 DEFAULT_XO_FILEPATH="XenOrchestraInstallerUpdater"
 DEFAULT_INITIAL_APPS=("xe-guest-utilities" "openssh-server" "git" "aptitude" "cockpit")
-GLOBAL_PORTS=("22" "80" "443" "9090")
+
+# Function to display help
+display_help() {
+  echo "Usage: $0 [option]"
+  echo
+  echo "Options:"
+  echo "  update_system                Update the system"
+  echo "  check_install PACKAGE_NAME   Check if a package is installed and install it if not"
+  echo "  change_time_zone TIME_ZONE   Change the time zone (default: $DEFAULT_TIME_ZONE)"
+  echo "  create_swap_file SIZE        Create a swap file of the specified size (default: $DEFAULT_SWAP_FILE)"
+  echo "  disable_ipv6                 Permanently disable IPv6"
+  echo "  stop_service SERVICE_NAME    Stop the specified service"
+  echo "  docker_compose_pull_and_restart DIRECTORY"
+  echo "                               Pull Docker Compose images and restart containers in the specified directory"
+  echo "  update_docker_compose        Update Docker Compose to the latest version"
+  echo "  initial_install              Run the initial system setup"
+  echo "  app_update                   Update system and specific applications"
+  echo "  help                         Display this help message"
+  echo
+}
 
 # Function to update the system
 update_system() {
@@ -17,6 +35,14 @@ update_system() {
   sudo apt-get update && sudo apt-get upgrade -y
   sudo apt-get autoremove -y
 }
+
+# Function to stop a service
+stop_service() {
+  local service_name=$1
+  echo "Stopping service: $service_name"
+  sudo systemctl stop $service_name
+}
+
 
 # Function to check if a package is installed
 check_install() {
@@ -31,7 +57,7 @@ change_time_zone() {
   echo "Changing time zone to $time_zone..."
 
   # Check if the specified time zone is valid
-  if [ -f /usr/share/zoneinfo/$time_zone ]; then
+  if [ -f /usr/share/zoneinfo/$time_zone]; then
     sudo timedatectl set-timezone $time_zone
     echo "Time zone changed to $time_zone."
   else
@@ -77,6 +103,7 @@ EOF'
   echo "IPv6 has been disabled. A reboot is required for changes to take full effect."
 }
 
+
 # Function to set up the firewall and allow all outgoing connections
 setup_firewall() {
     # Enable UFW firewall
@@ -96,53 +123,6 @@ setup_firewall() {
 }
 
 
-# Function to create SSH keys and copy public keys to multiple remote computers
-create_and_copy_ssh_keys() {
-    local comment
-    local remote_computers
-
-    # Prompt for comment if not provided as a variable
-    if [ -z "$1" ]; then
-        read -p "Enter comment for SSH keys: " comment
-    else
-        comment=$1
-    fi
-
-    # Prompt for remote computers if not provided as a variable
-    if [ -z "$2" ]; then
-        read -p "Enter remote computers (user@host user@host ...): " -a remote_computers
-    else
-        IFS=' ' read -r -a remote_computers <<< "$2"
-    fi
-
-    # Ensure .ssh directory exists locally
-    if [ ! -d "$HOME/.ssh" ]; then
-        echo "Creating .ssh directory locally..."
-        mkdir -p "$HOME/.ssh"
-    fi
-
-    # Generate an ed25519 SSH key with the provided comment
-    echo "Generating ed25519 SSH key with comment '$comment'..."
-    ssh-keygen -t ed25519 -C "$comment" -f "$HOME/.ssh/id_ed25519" -N ""
-
-    # Generate an RSA 4096-bit SSH key with the provided comment
-    echo "Generating RSA 4096-bit SSH key with comment '$comment'..."
-    ssh-keygen -t rsa -b 4096 -C "$comment" -f "$HOME/.ssh/id_rsa" -N ""
-
-    # Copy the public keys to each remote computer
-    for remote in "${remote_computers[@]}"; do
-        echo "Ensuring .ssh directory exists on $remote..."
-        ssh $remote 'mkdir -p ~/.ssh'
-
-        echo "Copying ed25519 public key to $remote..."
-        ssh-copy-id -i "$HOME/.ssh/id_ed25519.pub" $remote
-
-        echo "Copying RSA 4096-bit public key to $remote..."
-        ssh-copy-id -i "$HOME/.ssh/id_rsa.pub" $remote
-    done
-
-    echo "SSH keys have been created and copied to all specified remote computers!"
-}
 
 # Call the function with optional arguments for comment and remote computers
 create_and_copy_ssh_keys "$1" "$2"
@@ -220,9 +200,6 @@ install_ansible() {
     ansible --version
 }
 
-# Call the function
-install_ansible
-
 
 # Function to install Xen Orchestra using the installer/updater script
 install_xo() {
@@ -244,16 +221,6 @@ install_xo() {
     xo --version
 }
 
-# Call the function
-install_xo
-
-
-# Function to stop a service
-stop_service() {
-  local service_name=$1
-  echo "Stopping service: $service_name"
-  sudo systemctl stop $service_name
-}
 
 # Function to pull Docker Compose images and restart updated containers
 docker_compose_pull_and_restart() {
@@ -296,7 +263,7 @@ update_docker_compose() {
 }
 
 # Function for Initial Install
-Initial_Install() {
+initial_install() {
   echo "Initial Update"
 
   # Update system
@@ -322,8 +289,9 @@ Initial_Install() {
   sudo sh -c 'echo "sudo apt autoremove -y" >> /etc/cron.monthly/autoremove'
   sudo chmod +x /etc/cron.monthly/autoremove
   
-  # Enable Firewall
+  # setup firewall 
   setup_firewall
+  
 }
 
 app_update() {
@@ -347,92 +315,49 @@ app_update() {
   echo "Completed updates for $HOSTNAME" 
 }
 
-# Function to display help information
-display_help() {
-    echo "Usage: $0 {option}"
-    echo
-    echo "Options:"
-    echo "  -u, --update           Update the system"
-    echo "  -au, --appupdate       Update applications and services"
-    echo "  -ii, --initialinstall  Perform initial installation and setup"
-    echo "  -s, --stop <service_name>  Stop a specific service"
-    echo "  -h, --help             Display this help message"
-}
-
-# Function to display the menu
-display_menu() {
-    clear
-    echo "=================================="
-    echo " System Management Menu"
-    echo "=================================="
-    echo "1. Update System"
-    echo "2. App Update"
-    echo "3. Initial Install"
-    echo "4. Stop Service"
-    echo "5. Display Help"
-    echo "6. Exit"
-    echo "=================================="
-    echo -n "Enter your choice [1-6]: "
-}
-
-# Main execution
+# Main script logic
 if [ $# -eq 0 ]; then
-    while true; do
-        display_menu
-        read -r choice
-        case $choice in
-            1)
-                update_system
-                ;;
-            2)
-                app_update
-                ;;
-            3)
-                Initial_Install
-                ;;
-            4)
-                echo -n "Enter the service name to stop: "
-                read -r service_name
-                stop_service "$service_name"
-                ;;
-            5)
-                display_help
-                ;;
-            6)
-                echo "Exiting..."
-                break
-                ;;
-            *)
-                echo "Invalid choice, please try again."
-                ;;
-        esac
-        echo -n "Press any key to continue..."
-        read -r -n 1
-    done
-else
-    case "$1" in
-        -u|--update)
-            update_system
-            ;;
-        -au|--appupdate)
-            app_update
-            ;;
-        -ii|--initialinstall)
-            Initial_Install
-            ;;
-        -s|--stop)
-            if [ -z "$2" ]; then
-                echo "Service name is required for stopping a service"
-                exit 1
-            fi
-            stop_service "$2"
-            ;;
-        -h|--help)
-            display_help
-            ;;
-        *)
-            echo "Invalid option. Use -h or --help for usage information."
-            exit 1
-            ;;
-    esac
+  display_help
+  exit 1
 fi
+
+case "$1" in
+  update_system)
+    update_system
+    ;;
+  install_package)
+    check_install "$2"
+    ;;
+  change_time_zone)
+    change_time_zone "$2"
+    ;;
+  create_swap_file)
+    create_swap_file "$2"
+    ;;
+  disable_ipv6)
+    disable_ipv6
+    ;;
+  stop_service)
+    stop_service "$2"
+    ;;
+  docker_compose_pull)
+    docker_compose_pull_and_restart "$2"
+    ;;
+  update_docker_compose)
+    update_docker_compose
+    ;;
+  initial_install)
+    initial_install
+    ;;
+  app_update)
+    app_update
+    ;;
+  help)
+    display_help
+    ;;
+  *)
+    echo "Invalid option: $1"
+    display_help
+    exit 1
+    ;;
+esac
