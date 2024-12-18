@@ -346,7 +346,7 @@ create_ssh_keys() {
 
   # Generate an ed25519 SSH key with the provided comment
   echo "Generating ed25519 SSH key with comment '$comment'..."
-  ssh-keygen -t ed25519 -a 100 -C "$comment" -f "$HOME/.ssh/id_ed25519" -N ""
+  ssh-keygen -a 100 -t ed25519 -C "$comment" -f "$HOME/.ssh/id_ed25519" -N ""
 
   # Generate an RSA 4096-bit SSH key with the provided comment
   echo "Generating RSA 4096-bit SSH key with comment '$comment'..."
