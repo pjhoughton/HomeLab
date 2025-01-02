@@ -1,0 +1,46 @@
+#cloud-config
+timezone: Europe/London
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - aptitude
+  - cockpit
+  - htop
+  - curl
+
+swap:
+  filename: /swapfile
+  size: "4096M"
+  maxsize: "4096M"
+
+#users:
+#  - name: your_username
+#    ssh-authorized-keys:
+#      - ssh-rsa YOUR_SSH_KEY
+#    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+#    shell: /bin/bash
+
+ntp:
+  servers:
+    - 0.ubuntu.pool.ntp.org
+    - 1.ubuntu.pool.ntp.org
+
+
+runcmd:
+  - sysctl -w net.ipv6.conf.all.disable_ipv6=1
+  - sysctl -w net.ipv6.conf.default.disable_ipv6=1
+  - echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
+  - echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+  - dd if=/dev/zero of=/swapfile bs=1M count=4096
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo "/swapfile none swap sw 0 0" >> /etc/fstab
+  - ufw allow out on all
+  - ufw allow 22
+  - ufw allow 80
+  - ufw allow 443
+  - ufw allow 9090
+  - ufw enable
