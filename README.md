@@ -120,6 +120,7 @@ Gluetun is a VPN client in a thin Docker container for multiple VPN providers, w
   - Enter bios using del key 
   - Ensure EUFI is enabled not bios 
   - Ensure PC auto starts after a power failure 
+  - set UMA Frame Buffer Size 1GB ( default 4Gb)
 
 Click on Advanced tab - AMD CBS - FCH Common options - FCH Common options set to always on.
 
