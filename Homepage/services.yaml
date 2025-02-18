@@ -31,15 +31,6 @@
           type: radarr
           url: "http://{{HOMEPAGE_VAR_DockerURL}}:7878"
           key: {{HOMEPAGE_VAR_RadarrAPI}}
-    - lidarr:
-        icon: lidarr.png
-        href: "http://{{HOMEPAGE_VAR_DockerURL}}:8686"
-        description: Music Management
-        ping: "{{HOMEPAGE_VAR_DockerURL}}:8686"
-        widget:
-          type: lidarr
-          url: "http://{{HOMEPAGE_VAR_DockerURL}}:8686"
-          key: {{HOMEPAGE_VAR_LidarrAPI}}
     - sabnzb:
         icon: /icons/sabnzb.png
         href: "http://{{HOMEPAGE_VAR_DockerURL}}:8080"

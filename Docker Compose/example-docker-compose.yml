@@ -21,6 +21,7 @@ services:
       - HOMEPAGE_VAR_SonarrAPI=${HOMEPAGE_VAR_SonarrAPI}
       - HOMEPAGE_VAR_SabnzbAPI=${HOMEPAGE_VAR_SabnzbAPI}
       - HOMEPAGE_VAR_PlexAPI=${HOMEPAGE_VAR_PlexAPI}
+      #- HOMEPAGE_VAR_LidarrAPI=${HOMEPAGE_VAR_LidarrAPI}
       - HOMEPAGE_VAR_CoinmarketcapAPI=${HOMEPAGE_VAR_CoinmarketcapAPI}
       - HOMEPAGE_VAR_HomeAssistantAPI=${HOMEPAGE_VAR_HomeAssistantAPI}
       - HOMEPAGE_VAR_openweathermapAPI=${HOMEPAGE_VAR_openweathermapAPI}
@@ -36,8 +37,35 @@ services:
     restart: unless-stopped
     depends_on: 
       - sonarr
-      - radarr
 
+
+
+######### VPN  ##########
+
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8080:8080 # sabnzb web interface
+      - 8989:8989 # radarr
+      - 7878:7878 # sonarr
+      #- 8686:8686 # lidarr
+      #- 6767:6767 # bazarr
+    volumes:
+      - ${DockerDir}/gluetun:/gluetun
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
+    restart: unless-stopped
 
 
 ######### SABNZB Downloader ##########
@@ -53,10 +81,13 @@ services:
       - ${DockerDir}/sabnzbd:/config
       - ${MediaDir}/downloads/complete:/downloads 
       - ${MediaDir}/downloads/incomplete:/incomplete-downloads
-    ports:
-      - 8080:8080
+# Not needed as using gluetun as vpn 
+#   ports:
+#     - 8080:8080
     restart: unless-stopped
-
+    depends_on: 
+      - gluetun
+    network_mode: service:gluetun  # we are using gluetun vpn 
 
 
 
@@ -73,11 +104,11 @@ services:
       - ${DockerDir}/radarr:/config
       - ${MediaDir}/video/movies:/movies
       - ${MediaDir}/downloads/complete:/downloads 
-    ports:
-      - 8989:8989
+# Not needed as using gluetun 
     restart: unless-stopped
     depends_on: 
       - sabnzbd
+    network_mode: service:gluetun  # we are using gluetun vpn 
 
 ######### Sonarr TV Shows Downloads ##########
 
@@ -93,10 +124,11 @@ services:
       - ${DockerDir}/sonarr:/config
       - ${MediaDir}/video/tv-shows:/tv 
       - ${MediaDir}/downloads/complete:/downloads
-    ports:
-      - 7878:7878
+# Not needed as using gluetun as vpn 
+#   ports:
+#     - 8989:8989
     restart: unless-stopped
     depends_on: 
-      - sabnzbd
-
+      - radarr
+    network_mode: service:gluetun  # we are using gluetun vpn 
 
