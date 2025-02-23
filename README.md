@@ -112,7 +112,13 @@ A modern, fully static, fast, secure fully proxied, highly customizable applicat
 
   - GlueTUN ( Docker container)
 
-Gluetun is a VPN client in a thin Docker container for multiple VPN providers, written in Go, and using OpenVPN or Wireguard, DNS over TLS, with a few proxy servers built-in
+Gluetun is a VPN client in a thin Docker container for multiple VPN providers, written in Go, and using OpenVPN or Wireguard, DNS over TLS, with a few proxy servers built-in.
+
+This is not used anymore instead i added a client VPN to my UNifi Router, which always multiple VPN instances for different regions and  allocate  specific devices to use the VPN.
+
+  - NGINX Proxy Manager
+
+A Proxy manager that integrates with Lets Encrypt with DNS chaallenge ,  allowing all internal servers to have a valid certificate without having to pay for a  certificate or expose them to the internet. THis removes the anoying browser certificate errors    
 
 
 ####  Configure mini PC
