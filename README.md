@@ -110,13 +110,15 @@ Radarr is a movie collection manager for Usenet and BitTorrent users. It can mon
 
 A modern, fully static, fast, secure fully proxied, highly customizable application dashboard with integrations for over 100 services and translations into multiple languages. Easily configured via YAML files or through docker label discovery.
 
+![Homepagedesktop](https://github.com/user-attachments/assets/162b93a3-7677-46c0-a8a2-8bd33ac6ac1d)
+
   - GlueTUN ( Docker container)
 
 Gluetun is a VPN client in a thin Docker container for multiple VPN providers, written in Go, and using OpenVPN or Wireguard, DNS over TLS, with a few proxy servers built-in.
 
 This is not used anymore instead i added a client VPN to my UNifi Router, which always multiple VPN instances for different regions and  allocate  specific devices to use the VPN.
 
-  - NGINX Proxy Manager
+  - NGINX Proxy Manager (Docker Container)
 
 A Proxy manager that integrates with Lets Encrypt with DNS chaallenge ,  allowing all internal servers to have a valid certificate without having to pay for a  certificate or expose them to the internet. THis removes the anoying browser certificate errors    
 
