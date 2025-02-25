@@ -4,7 +4,83 @@
 # - Radaar - Movie collection manager
 # - Sonarr - TV show collection manager 
 # - Homepage - Application dashboard with integrations for over 100 services
+
+networks:
+  backend:
+    driver: bridge
+
 services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    ports:
+      - 80:80
+      - 443:443
+      - 81:81
+    volumes:
+      - ${DockerDir}/nginx_pm/data:/data
+      - ${DockerDir}/nginx_pm/letsencrypt:/etc/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    networks:
+      - backend
+  sabnzbd:
+    image: linuxserver/sabnzbd
+    container_name: sabnzbd
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DockerDir}/sabnzbd:/config
+      - ${MediaDir}/downloads/complete:/downloads 
+      - ${MediaDir}/downloads/incomplete:/incomplete-downloads
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+    depends_on:
+      - nginx-proxy-manager
+      
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DockerDir}/radarr:/config
+      - ${MediaDir}/video/movies:/movies
+      - ${MediaDir}/downloads/complete:/downloads 
+    ports:
+      - 7878:7878
+    networks:
+      - backend
+    depends_on:
+      - sabnzbd
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DockerDir}/sonarr:/config
+      - ${MediaDir}/video/tv-shows:/tv 
+      - ${MediaDir}/downloads/complete:/downloads
+    ports:
+      - 8989:8989
+    networks:
+      - backend
+    depends_on:
+      - sabnzbd
+     
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
@@ -50,79 +126,4 @@ services:
     networks:
       - backend
 
-  nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:latest
-    container_name: nginx-proxy-manager
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    ports:
-      - 80:80
-      - 443:443
-      - 81:81
-    volumes:
-      - ${DockerDir}/nginx_pm/data:/data
-      - ${DockerDir}/nginx_pm/letsencrypt:/etc/letsencrypt
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: always
-    networks:
-      - backend
-
-  sonarr:
-    image: linuxserver/sonarr
-    container_name: sonarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${DockerDir}/sonarr:/config
-      - ${MediaDir}/video/tv-shows:/tv 
-      - ${MediaDir}/downloads/complete:/downloads
-    ports:
-      - 8989:8989
-    networks:
-      - backend
-    depends_on:
-      - sabnzbd
-
-  radarr:
-    image: linuxserver/radarr
-    container_name: radarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${DockerDir}/radarr:/config
-      - ${MediaDir}/video/movies:/movies
-      - ${MediaDir}/downloads/complete:/downloads 
-    ports:
-      - 7878:7878
-    networks:
-      - backend
-    depends_on:
-      - sabnzbd
-
-  sabnzbd:
-    image: linuxserver/sabnzbd
-    container_name: sabnzbd
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${DockerDir}/sabnzbd:/config
-      - ${MediaDir}/downloads/complete:/downloads 
-      - ${MediaDir}/downloads/incomplete:/incomplete-downloads
-    ports:
-      - 8080:8080
-    networks:
-      - backend
-    depends_on:
-      - nginx-proxy-manager
-
-networks:
-  backend:
-    driver: bridge
+  
