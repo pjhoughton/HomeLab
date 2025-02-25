@@ -1,5 +1,9 @@
-version: '3.8'
-
+# Docker compose file for the following
+# - NGINX Proxy manager - allows Lets encrypt ssl certfciates without exposing h ome network to Internet 
+# - sabnzb - Binary News reader 
+# - Radaar - Movie collection manager
+# - Sonarr - TV show collection manager 
+# - Homepage - Application dashboard with integrations for over 100 services
 services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
@@ -10,6 +14,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
       # URLS
+      - HOMEPAGE_VAR_CockpitURL=${HOMEPAGE_VAR_CockpitURL}
       - HOMEPAGE_VAR_DockerURL=${HOMEPAGE_VAR_DockerURL}
       - HOMEPAGE_VAR_HomeAssistantURL=${HOMEPAGE_VAR_HomeAssistantURL}
       - HOMEPAGE_VAR_HomeserverURL=${HOMEPAGE_VAR_HomeserverURL}
@@ -60,7 +65,7 @@ services:
       - ${DockerDir}/nginx_pm/data:/data
       - ${DockerDir}/nginx_pm/letsencrypt:/etc/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
+    restart: always
     networks:
       - backend
 
