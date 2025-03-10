@@ -1,20 +1,10 @@
-# Docker compose file for the following
-# - NGINX Proxy manager - allows Lets encrypt ssl certfciates without exposing h ome network to Internet 
-# - sabnzb - Binary News reader 
-# - Radaar - Movie collection manager
-# - Sonarr - TV show collection manager 
-# - Homepage - Application dashboard with integrations for over 100 services
-
 networks:
   backend:
     driver: bridge
- 
+
 services:
 
-############################################################################ 
-# - NGINX Proxy Manager  
-############################################################################
-
+  # NGINX Proxy Manager
   nginx-proxy-manager:
     image: jc21/nginx-proxy-manager:latest
     container_name: nginx-proxy-manager
@@ -33,12 +23,13 @@ services:
     restart: always
     networks:
       - backend
-      
-      
-############################################################################ 
-# - SABNZBD
-############################################################################      
-      
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:81 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  # SABNZBD
   sabnzbd:
     image: linuxserver/sabnzbd
     container_name: sabnzbd
@@ -57,11 +48,13 @@ services:
       - backend
     depends_on:
       - nginx-proxy-manager
-      
-  ############################################################################ 
-# - RADARR
-############################################################################   
- 
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  # RADARR
   radarr:
     image: linuxserver/radarr
     container_name: radarr
@@ -80,11 +73,13 @@ services:
       - backend
     depends_on:
       - sabnzbd
-      
- ############################################################################ 
-# - SONARR
-############################################################################
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7878 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
 
+  # SONARR
   sonarr:
     image: linuxserver/sonarr
     container_name: sonarr
@@ -103,14 +98,18 @@ services:
       - backend
     depends_on:
       - sabnzbd
-############################################################################ 
-# - HOMEPage 
-############################################################################
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8989 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  # Homepage
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     environment:
-    #Common
+      # Common
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
@@ -149,5 +148,8 @@ services:
       - nginx-proxy-manager
     networks:
       - backend
-
-  
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
