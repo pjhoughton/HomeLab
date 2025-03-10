@@ -8,8 +8,13 @@
 networks:
   backend:
     driver: bridge
-
+ 
 services:
+
+############################################################################ 
+# - NGINX Proxy Manager  
+############################################################################
+
   nginx-proxy-manager:
     image: jc21/nginx-proxy-manager:latest
     container_name: nginx-proxy-manager
@@ -28,6 +33,12 @@ services:
     restart: always
     networks:
       - backend
+      
+      
+############################################################################ 
+# - SABNZBD
+############################################################################      
+      
   sabnzbd:
     image: linuxserver/sabnzbd
     container_name: sabnzbd
@@ -41,11 +52,16 @@ services:
       - ${MediaDir}/downloads/incomplete:/incomplete-downloads
     ports:
       - 8080:8080
+    restart: always
     networks:
       - backend
     depends_on:
       - nginx-proxy-manager
       
+  ############################################################################ 
+# - RADARR
+############################################################################   
+ 
   radarr:
     image: linuxserver/radarr
     container_name: radarr
@@ -59,10 +75,16 @@ services:
       - ${MediaDir}/downloads/complete:/downloads 
     ports:
       - 7878:7878
+    restart: always
     networks:
       - backend
     depends_on:
       - sabnzbd
+      
+ ############################################################################ 
+# - SONARR
+############################################################################
+
   sonarr:
     image: linuxserver/sonarr
     container_name: sonarr
@@ -76,11 +98,14 @@ services:
       - ${MediaDir}/downloads/complete:/downloads
     ports:
       - 8989:8989
+    restart: always
     networks:
       - backend
     depends_on:
       - sabnzbd
-     
+############################################################################ 
+# - HOMEPage 
+############################################################################
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
@@ -119,10 +144,9 @@ services:
       - ${DockerDir}/homepage:/app/config
       - ${DockerDir}/homepage/public/icons:/app/public/icons
       - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
+    restart: always
     depends_on:
-      - sonarr
-      - radarr
+      - nginx-proxy-manager
     networks:
       - backend
 
