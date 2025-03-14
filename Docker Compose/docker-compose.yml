@@ -125,6 +125,7 @@ services:
          - PGID=${PGID}
          - TZ=${TZ}
          # URLS
+         - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS}
          - HOMEPAGE_VAR_CockpitURL=${HOMEPAGE_VAR_CockpitURL}
          - HOMEPAGE_VAR_DockerURL=${HOMEPAGE_VAR_DockerURL}
          - HOMEPAGE_VAR_HomeAssistantURL=${HOMEPAGE_VAR_HomeAssistantURL}
