@@ -35,7 +35,7 @@
           key: {{HOMEPAGE_VAR_RadarrAPI}}
 
     - sabnzbd:
-        icon: /icons/sabnzb.png
+        icon: /icons/sabnzbd.png
         href: "http://{{HOMEPAGE_VAR_SabnzbdURL}}"
         description: NZB Download Management
         ping: {{HOMEPAGE_VAR_SabnzbdURL}}
@@ -43,19 +43,41 @@
           type: sabnzbd
           url: "https://{{HOMEPAGE_VAR_SabnzbdURL}}"
           key: {{HOMEPAGE_VAR_SabnzbdAPI}}
+          
+    - Bazarr:
+        icon: /icons/bazarr.png
+        href: "https://{{HOMEPAGE_VAR_BazarrURL}}"
+        description: Subtitle Manager
+        ping: {{HOMEPAGE_VAR_BazarrURL}}
+        widget:
+          type: bazarr
+          url: "https://{{HOMEPAGE_VAR_BazarrURL}}"
+          key: {{HOMEPAGE_VAR_BazarrAPI}}
+    - Homeserver:
+        icon: /icons/dsm.png
+        href: "https://{{HOMEPAGE_VAR_HomeserverURL}}"
+        description: Homeserver NAS
+        ping: {{HOMEPAGE_VAR_HomeserverURL}}
+        widget:
+          type: diskstation
+          url: "https://{{HOMEPAGE_VAR_HomeserverURL}}"
+          username: {{HOMEPAGE_VAR_NasUser}}
+          password: {{HOMEPAGE_VAR_NASPassword}}
+
 
 
 - Admin Console:
-    - nginx Proxy Manager:
-        icon: /icons/nginx.png
-        href: "http://{{HOMEPAGE_VAR_NGINXProxyURL}}"
-        description: NGINX Proxy Manager
-        ping: {{HOMEPAGE_VAR_NGINXProxyURL}}
+
+    - Unifi Controller:
+        icon: /icons/unifi.png
+        href: "https://{{HOMEPAGE_VAR_UnifiURL}}:443"
+        description: Unifi Console
+        ping: {{HOMEPAGE_VAR_UnifiURL}}
         widget:
-          type: npm
-          url: "https://{{HOMEPAGE_VAR_NGINXProxyURL}}"
-          username: {{HOMEPAGE_VAR_NGINXUsername}}
-          password: {{HOMEPAGE_VAR_NGINXPassword}}
+          type: unifi
+          url: "https://{{HOMEPAGE_VAR_UnifiURL}}"
+          username: {{HOMEPAGE_VAR_NasUser}}
+          password: {{HOMEPAGE_VAR_NASPassword}}
 
     - Xen Orchestrator:
         icon: /icons/xo.png
@@ -79,28 +101,23 @@
         #  type: homeassistant
         #  url: "https://{{HOMEPAGE_VAR_HomeAssistantURL}}"
         #  key: {{HOMEPAGE_VAR_HomeAssistantAPI}}
+        
+    - cockpit:
+        icon: /icons/cockpit.png
+        href: "http://{{HOMEPAGE_VAR_CockpitURL}}"
+        description: Cockpit  Management
+        ping: {{HOMEPAGE_VAR_CockpitURL}}
 
-    - Homeserver:
-        icon: /icons/dsm.png
-        href: "https://{{HOMEPAGE_VAR_HomeserverURL}}"
-        description: Homeserver NAS
-        ping: {{HOMEPAGE_VAR_HomeserverURL}}
+    - nginx Proxy Manager:
+        icon: /icons/nginx.png
+        href: "http://{{HOMEPAGE_VAR_NGINXProxyURL}}"
+        description: NGINX Proxy Manager
+        ping: {{HOMEPAGE_VAR_NGINXProxyURL}}
         widget:
-          type: diskstation
-          url: "https://{{HOMEPAGE_VAR_HomeserverURL}}"
-          username: {{HOMEPAGE_VAR_NasUser}}
-          password: {{HOMEPAGE_VAR_NASPassword}}
-
-    - Unifi Controller:
-        icon: /icons/unifi.png
-        href: "https://{{HOMEPAGE_VAR_UnifiURL}}:443"
-        description: Unifi Console
-        ping: {{HOMEPAGE_VAR_UnifiURL}}
-        widget:
-          type: unifi
-          url: "https://{{HOMEPAGE_VAR_UnifiURL}}"
-          username: {{HOMEPAGE_VAR_NasUser}}
-          password: {{HOMEPAGE_VAR_NASPassword}}
+          type: npm
+          url: "https://{{HOMEPAGE_VAR_NGINXProxyURL}}"
+          username: {{HOMEPAGE_VAR_NGINXUsername}}
+          password: {{HOMEPAGE_VAR_NGINXPassword}}
 
 - Markets:
     - Crypto:
