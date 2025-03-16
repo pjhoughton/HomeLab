@@ -18,6 +18,8 @@ services:
     restart: always
     networks:
       - backend
+    depends_on:
+      - autoheal
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:81 || exit 1"]
       interval: 1m

@@ -1,4 +1,3 @@
-# Docker Compose master file 
 # Define global networks
 networks:
   backend:
@@ -30,7 +29,7 @@ services:
     extends:
       file: ./docker-compose.radarr.yml
       service: radarr
-
+      
   sonarr:
     extends:
       file: ./docker-compose.sonarr.yml
@@ -40,3 +39,8 @@ services:
     extends:
       file: ./docker-compose.homepage.yml
       service: homepage
+
+  bazarr:
+    extends:
+      file: ./docker-compose.bazarr.yml
+      service: bazarr
