@@ -1,12 +1,64 @@
-# Commit your application's lock file https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control
-# You may choose to ignore a library lock file http://getcomposer.org/doc/02-libraries.md#lock-file
-# composer.lock
-
+# ───────────────────────────────────────────────
+# Override ignore rules for important files
+# Always keep these tracked, even if they match patterns below
+!inventory
+!ansible.cfg
+!README.md
+!*.cfg
+!*.md
 !*.yml
 !*.yaml
-!example.env
-!*.md
+!*.MD
+!demo_ansible_vault.pass
 !.gitignore
+!.gitkeep
 
+# ───────────────────────────────────────────────
+# Ansible specific ignores
+# Vault pass files and runtime artifacts
+ansible_vault.pass
+tmp/
+retries/
 
-.env
+# ───────────────────────────────────────────────
+# Temporary and environment files
+*.swp
+*.tmp
+*.bak
+*.log
+*.old
+
+# ───────────────────────────────────────────────
+# Windows system and temp files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+*.lnk
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.stackdump
+
+# ───────────────────────────────────────────────
+# Crash logs and dumps
+*.err
+*.dmp
+
+# ───────────────────────────────────────────────
+# Hidden system files (cross‑platform)
+.DS_Store
+
+# ───────────────────────────────────────────────
+# Python cache (if using Ansible modules locally)
+__pycache__/
+*.pyc
+*.pyo
+
+# ───────────────────────────────────────────────
+# IDE/editor configs
+.vscode/
+.idea/
+*.code-workspace
