@@ -1,3 +1,33 @@
+# Homelab
+
+## Overview
+This repository documents and manages my homelab environment.  
+It includes virtualization with **XCP-ng**, orchestration via **Xen Orchestra**, and storage integration using **Synology NAS shares**.  
+The goal is to provide a reliable, flexible, and automated platform for experimentation, learning, and running services at home.
+
+## Vision & Documentation
+This repository is part of my broader homelab and automation projects.  
+For the full vision, detailed documentation, and cross project context, visit my website:  
+👉 [pjhoughton.github.io](https://pjhoughton.github.io)
+
+*Building blocks of my homelab — automation, containers, and smart integrations, shared openly.*
+
+## Getting Started
+### Prerequisites
+- XCP-ng installed on physical host(s)
+- Xen Orchestra deployed for management
+- Synology NAS available on the network
+- SSH access and administrative credentials
+
+### Usage
+#### 1. Virtualization with XCP-ng
+- Install XCP-ng on your server hardware.
+- Access the host via Xen Orchestra or `xe` CLI.
+- Example: create a new VM
+```bash
+xe vm-install template="Debian 12" new-name-label="TestVM"
+
+
 # Media Server / HomeLab
 
 Home Lab Incorporating XCP-NG hypervisor for VM and Docker compose for containers 
