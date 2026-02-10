@@ -230,6 +230,15 @@ sudo apt autoremove -y
 sudo sh -c 'echo "sudo apt autoremove -y" >> /etc/cron.monthly/autoremove'
 sudo chmod +x /etc/cron.monthly/autoremove
 
+  - Configure Firewall
+
+allow outgoing , block incomming allow port 443 and 22  and enable firewall
+
+sudo ufw default allow outgoing && sudo ufw default deny incoming && sudo ufw allow 22/tcp && sudo ufw allow 443/tcp && sudo ufw --force enable
+sudo ufw status verbose
+
+
+
 - Create NFS Mount Points
 
 Prerequistes: ensure NFS Shares on created on the NAS (NFS Server) . NFS Permisisons are based on IP adddress not username or password
