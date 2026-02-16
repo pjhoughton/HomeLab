@@ -353,6 +353,72 @@ docker compose up -d
 docker compose ps
 
 
+## 🔥 Firewall Rules — Server: app1
+
+**UFW Status:**  
+- Incoming: deny  
+- Outgoing: allow  
+- Routed: deny  
+- Logging: on (low)
+
+### ✅ Allowed Inbound Ports
+
+| Port/Proto | Purpose                     |
+|------------|-----------------------------|
+| 22/tcp     | SSH                         |
+| 80/tcp     | Nginx Proxy Manager (HTTP)  |
+| 81/tcp     | Nginx Proxy Manager Admin   |
+| 443/tcp    | Nginx Proxy Manager (HTTPS) |
+| 3000/tcp   | Homepage Dashboard          |
+| 4443/tcp   | Xen Orchestra               |
+| 32400/tcp  | Plex (core)                 |
+| 1900/udp   | Plex DLNA                   |
+| 32410/udp  | Plex Discovery              |
+| 32412/udp  | Plex Discovery              |
+| 32413/udp  | Plex Discovery              |
+| 32414/udp  | Plex Discovery              |
+| 8324/tcp   | Plex Companion              |
+| 32469/tcp  | Plex DLNA                   |
+| 111/tcp    | NFS Client                  |
+| 111/udp    | NFS Client                  |
+| 2049/tcp   | NFS Client                  |
+| 2049/udp   | NFS Client                  |
+
+### 📌 Notes
+- Autoheal exposes no ports.
+- Plex ports listed include full DLNA + discovery support.
+- NFS ports required because this server mounts `/mnt` via NFS.
+
+
+## 🔥 Firewall Rules — Server: iotapp1
+
+**UFW Status:**  
+- Incoming: deny  
+- Outgoing: allow  
+- Routed: deny  
+- Logging: on (low)
+
+### ✅ Allowed Inbound Ports
+
+| Port/Proto | Purpose        |
+|------------|----------------|
+| 22/tcp     | SSH            |
+| 443/tcp    | HTTPS (general use) |
+| 6767/tcp   | Bazarr         |
+| 7878/tcp   | Radarr         |
+| 8080/tcp   | Sabnzbd        |
+| 8989/tcp   | Sonarr         |
+| 111/tcp    | NFS Client     |
+| 111/udp    | NFS Client     |
+| 2049/tcp   | NFS Client     |
+| 2049/udp   | NFS Client     |
+
+### 📌 Notes
+- Autoheal exposes no ports.
+- These apps only use single TCP ports; no UDP or dynamic ports required.
+- NFS ports required because this server mounts `/mnt` via NFS.
+
+
 
 
 
